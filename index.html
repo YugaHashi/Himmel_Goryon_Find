@@ -1,0 +1,5 @@
+// 旧（直接Supabase）
+// const res = await fetch(`${SUPABASE_URL}/rest/v1/menus?...`);
+
+// 新（Vercel経由）
+const res = await fetch(`/api/search?q=${query}`);
