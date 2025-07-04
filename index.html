@@ -1,5 +1,17 @@
-// 旧（直接Supabase）
-// const res = await fetch(`${SUPABASE_URL}/rest/v1/menus?...`);
-
-// 新（Vercel経由）
-const res = await fetch(`/api/search?q=${query}`);
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>メニュー検索</title>
+</head>
+<body>
+  <div class="container">
+    <input type="text" id="searchInput" placeholder="メニュー名を入力してください" />
+    <div id="result" class="result" style="display:none;"></div>
+    <div class="menu-list" id="menuList"></div>
+  </div>
+  <script src="clients.js"></script>
+</body>
+</html>
