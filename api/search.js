@@ -1,22 +1,24 @@
-import { createClient } from '@supabase/supabase-js';
+// /api/search.js
+import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SECRET_KEY
-);
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_KEY
+)
 
 export default async function handler(req, res) {
-  const query = req.query.q || "";
-
-  const { data, error } = await supabase
-    .from("find_menus")
-    .select("name_jp, description_jp, image_url")
-    .ilike("name_jp", `%${query}%`)
-    .limit(5);
-
-  if (error) {
-    return res.status(500).json({ error: error.message });
+  const { q, date } = req.query
+  if (!q || !date) {
+    return res.status(400).json({ error: 'Missing query or date' })
   }
 
-  res.status(200).json(data);
+  const { data, error } = await supabase
+    .from('find_menus')
+    .select('*')
+    .ilike('name_jp', `%${q}%`)
+    .order('created_at', { ascending: false })
+
+  if (error) return res.status(500).json({ error })
+
+  res.status(200).json(data)
 }
