@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   const query = req.query.q || "";
 
   const { data, error } = await supabase
-    .from("find_menus")  // ← テーブル名に合わせて変更済み
+    .from("find_menus")
     .select("*")
     .ilike("name_jp", `%${query}%`)
     .limit(1);
