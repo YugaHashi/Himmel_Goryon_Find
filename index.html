@@ -3,54 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>南平台ごりょんさん メニュー検索</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: url('https://source.unsplash.com/1600x900/?japanese,food') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      margin: 0;
-      padding: 2em;
-      text-align: center;
-    }
-    .container {
-      background: rgba(0,0,0,0.7);
-      padding: 2em;
-      border-radius: 1em;
-      max-width: 500px;
-      margin: auto;
-    }
-    input[type="text"] {
-      width: 80%;
-      padding: 0.6em;
-      font-size: 1em;
-    }
-    button {
-      padding: 0.6em 1.2em;
-      background: #a0522d;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-size: 1em;
-      margin-left: 0.5em;
-    }
-    .result {
-      margin-top: 1em;
-      text-align: left;
-    }
-  </style>
+  <title>南平台ごりょんさん メニュー一覧</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>メニュー詳細</h1>
-    <p>南平台ごりょんさんメニュー検索</p>
-    <input type="text" id="query" placeholder="例：レタス巻き" />
-    <button onclick="searchMenu()">検索</button>
-    <div class="result" id="result"></div>
-  </div>
+    <h1>南平台ごりょんさん メニュー一覧</h1>
+    <p class="intro">ようこそ！こちらでは、料理の写真や説明を含めてメニューを一覧・検索できます。</p>
 
+    <input type="text" id="search-input" placeholder="メニュー名を入力（例：レタス巻き）" list="menu-suggestions" />
+    <datalist id="menu-suggestions"></datalist>
+    <button id="search-btn">検索</button>
+
+    <div id="results" class="results-container"></div>
+  </div>
   <script type="module" src="clients.js"></script>
 </body>
 </html>
-
