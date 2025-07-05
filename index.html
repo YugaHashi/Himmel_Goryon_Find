@@ -2,47 +2,55 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>メニュー検索</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>南平台ごりょんさん メニュー検索</title>
   <style>
-    body { font-family:sans-serif; margin:0; padding:20px; background:transparent; }
-    #ui { max-width:600px; margin:auto; background:rgba(255,255,255,0.95); border-radius:10px; padding:20px; }
-    input, button { width:100%; padding:10px; margin-top:10px; font-size:1rem; }
-    button { background:#8B4513; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-    #welcome { text-align:center; margin-top:20px; }
-    #result { display:none; text-align:center; margin-top:20px; }
-    #result img { width:100%; border-radius:10px; object-fit:cover; }
-    #allList { margin-top:30px; max-height:200px; overflow-y:auto; border-top:1px solid #eee; padding-top:10px; }
-    #allList div { padding:6px 0; border-bottom:1px solid #eee; cursor:pointer; }
+    body {
+      font-family: sans-serif;
+      background: url('https://source.unsplash.com/1600x900/?japanese,food') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      margin: 0;
+      padding: 2em;
+      text-align: center;
+    }
+    .container {
+      background: rgba(0,0,0,0.7);
+      padding: 2em;
+      border-radius: 1em;
+      max-width: 500px;
+      margin: auto;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 0.6em;
+      font-size: 1em;
+    }
+    button {
+      padding: 0.6em 1.2em;
+      background: #a0522d;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+      margin-left: 0.5em;
+    }
+    .result {
+      margin-top: 1em;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
-  <div id="ui">
-    <!-- 検索フォーム -->
-    <input id="searchInput" list="menuList" placeholder="メニュー名を入力" />
-    <datalist id="menuList"></datalist>
-    <button id="searchBtn">検索</button>
-
-    <!-- 初期表示メッセージ -->
-    <div id="welcome">
-      <h2>ようこそ！</h2>
-      <p>南平台ごりょんさんのメニューを一覧・検索できます。</p>
-    </div>
-
-    <!-- 検索結果 -->
-    <div id="result">
-      <img id="resImg" src="" alt="料理画像" />
-      <h3 id="resName"></h3>
-      <p id="resDesc"></p>
-    </div>
-
-    <!-- 全メニュー一覧（スクロール可）-->
-    <div id="allList"></div>
+  <div class="container">
+    <h1>メニュー詳細</h1>
+    <p>南平台ごりょんさんメニュー検索</p>
+    <input type="text" id="query" placeholder="例：レタス巻き" />
+    <button onclick="searchMenu()">検索</button>
+    <div class="result" id="result"></div>
   </div>
 
-  <!-- Supabase JS SDK (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <!-- クライアントロジック -->
-  <script src="clients.js"></script>
+  <script type="module" src="clients.js"></script>
 </body>
 </html>
+
