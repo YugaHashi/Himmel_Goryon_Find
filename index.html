@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>メニュー検索</title>
+  <style>
+    body { font-family:sans-serif; margin:0; padding:20px; background:transparent; }
+    #ui { max-width:600px; margin:auto; background:rgba(255,255,255,0.95); border-radius:10px; padding:20px; }
+    input, button { width:100%; padding:10px; margin-top:10px; font-size:1rem; }
+    button { background:#8B4513; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+    #welcome { text-align:center; margin-top:20px; }
+    #result { display:none; text-align:center; margin-top:20px; }
+    #result img { width:100%; border-radius:10px; object-fit:cover; }
+    #allList { margin-top:30px; max-height:200px; overflow-y:auto; border-top:1px solid #eee; padding-top:10px; }
+    #allList div { padding:6px 0; border-bottom:1px solid #eee; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div id="ui">
+    <!-- 検索フォーム -->
+    <input id="searchInput" list="menuList" placeholder="メニュー名を入力" />
+    <datalist id="menuList"></datalist>
+    <button id="searchBtn">検索</button>
+
+    <!-- 初期表示メッセージ -->
+    <div id="welcome">
+      <h2>ようこそ！</h2>
+      <p>南平台ごりょんさんのメニューを一覧・検索できます。</p>
+    </div>
+
+    <!-- 検索結果 -->
+    <div id="result">
+      <img id="resImg" src="" alt="料理画像" />
+      <h3 id="resName"></h3>
+      <p id="resDesc"></p>
+    </div>
+
+    <!-- 全メニュー一覧（スクロール可）-->
+    <div id="allList"></div>
+  </div>
+
+  <!-- Supabase JS SDK (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <!-- クライアントロジック -->
+  <script src="clients.js"></script>
+</body>
+</html>
