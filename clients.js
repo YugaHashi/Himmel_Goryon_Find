@@ -1,42 +1,57 @@
-async function searchMenu() {
-  const keyword = document.getElementById("searchInput").value;
-  if (!keyword) return;
+// clients.js
+(async function(){
+  const API = 'https://himmel-goryon-find.vercel.app/api/search';
+  const listEl = document.getElementById('menuList');
+  const allList = document.getElementById('allList');
+  const welcome = document.getElementById('welcome');
+  const result  = document.getElementById('result');
 
-  const response = await fetch(
-    `https://himmel-goryon-find.vercel.app/api/search?q=${encodeURIComponent(keyword)}`
-  );
+  // URL パラメータから date を取得（Carrd側の他スクリプトで付与済み）
+  const baseParams = new URLSearchParams(window.location.search);
 
-  const resultBox = document.getElementById("result");
-  resultBox.innerHTML = "";
+  // 1. 全メニュー取得 → オートコンプ & スクロール一覧
+  baseParams.set('q',''); // 空クエリで全件取る
+  let urlAll = `${API}?${baseParams.toString()}`;
+  const all = await fetch(urlAll).then(r=>r.json());
+  all.forEach(item=>{
+    // datalist
+    let opt = document.createElement('option');
+    opt.value = item.name_jp;
+    listEl.appendChild(opt);
+    // scroll list
+    let row = document.createElement('div');
+    row.style.padding = '6px 0';
+    row.style.borderBottom = '1px solid #eee';
+    row.style.cursor = 'pointer';
+    row.textContent = item.name_jp;
+    row.onclick = ()=> show(item);
+    allList.appendChild(row);
+  });
 
-  try {
-    const data = await response.json();
+  // 2. 検索ボタン & Enter キーで検索
+  document.getElementById('searchBtn').onclick = doSearch;
+  document.getElementById('searchInput')
+    .addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch() });
 
-    if (!data || data.length === 0) {
-      resultBox.textContent = "該当するメニューが見つかりませんでした。";
-      return;
+  async function doSearch(){
+    const q = document.getElementById('searchInput').value.trim();
+    if(!q) return;
+    let params = new URLSearchParams(window.location.search);
+    params.set('q', q);
+    const data = await fetch(`${API}?${params.toString()}`)
+      .then(r=>r.json());
+    if(data.length){
+      show(data[0]);
+    } else {
+      alert('該当メニューが見つかりませんでした。');
     }
-
-    data.forEach((item) => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      const img = document.createElement("img");
-      img.src = item.image_url;
-      img.alt = item.name_jp;
-
-      const name = document.createElement("h3");
-      name.textContent = item.name_jp;
-
-      const desc = document.createElement("p");
-      desc.textContent = item.description_jp;
-
-      card.appendChild(img);
-      card.appendChild(name);
-      card.appendChild(desc);
-      resultBox.appendChild(card);
-    });
-  } catch (e) {
-    resultBox.textContent = "エラーが発生しました。";
   }
-}
+
+  function show(item){
+    welcome.style.display = 'none';
+    document.getElementById('resImg').src      = item.image_url;
+    document.getElementById('resName').innerText  = item.name_jp;
+    document.getElementById('resDesc').innerText  = item.description_jp;
+    result.style.display = 'block';
+  }
+})();
