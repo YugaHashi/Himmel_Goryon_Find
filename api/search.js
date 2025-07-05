@@ -2,11 +2,11 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_KEY
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
 );
 
-// ✅ CORSラッパー（Vercelデプロイ・Carrd fetchの両方に対応）
+// ✅ CORS wrapper
 function withCors(handler) {
   return async (req, res) => {
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -15,14 +15,13 @@ function withCors(handler) {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
 
     if (req.method === 'OPTIONS') {
-      return res.status(200).end(); // Preflight用
+      return res.status(200).end(); // preflight
     }
 
     return handler(req, res);
   };
 }
 
-// ✅ メインハンドラ
 async function handler(req, res) {
   const { q, date } = req.query;
 
