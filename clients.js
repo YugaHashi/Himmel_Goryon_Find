@@ -1,53 +1,73 @@
-// clients.js
-(async function(){
-  const API = 'https://himmel-goryon-find.vercel.app/api/search';
-  const listEl = document.getElementById('menuList');
-  const allList = document.getElementById('allList');
-  const welcome = document.getElementById('welcome');
-  const result  = document.getElementById('result');
+// 必要に応じて公開リポジトリに置き、「https://…/clients.js」で参照できるようにします。
+// Supabase 情報
+const SUPABASE_URL = 'https://labmhtrafdslfwqmzgky.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhYm1odHJhZmRzbGZ3cW16Z2t5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2OTAzNzksImV4cCI6MjA2NTI2NjM3OX0.CviQ3lzngfvqDFwEtDw5cTRSEICWliunXngYCokhbNs';
 
-  // URL パラメータから date を取得（Carrd側の他スクリプトで付与済み）
-  const baseParams = new URLSearchParams(window.location.search);
+// Supabase クライアント初期化
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // 1. 全メニュー取得 → オートコンプ & スクロール一覧
-  baseParams.set('q',''); // 空クエリで全件取る
-  let urlAll = `${API}?${baseParams.toString()}`;
-  const all = await fetch(urlAll).then(r=>r.json());
-  all.forEach(item=>{
-    // datalist
-    let opt = document.createElement('option');
+;(async function(){
+  const listInput = document.getElementById('menuList');
+  const allList   = document.getElementById('allList');
+  const welcome   = document.getElementById('welcome');
+  const result    = document.getElementById('result');
+
+  // 1. 全メニューを取得し、オートコンプ & 一覧表示
+  const { data: all } = await supabase
+    .from('find_menus')
+    .select('name_jp')
+    .order('created_at', { ascending: true });
+
+  all.forEach(item => {
+    // datalist 用 option
+    const opt = document.createElement('option');
     opt.value = item.name_jp;
-    listEl.appendChild(opt);
-    // scroll list
-    let row = document.createElement('div');
-    row.style.padding = '6px 0';
-    row.style.borderBottom = '1px solid #eee';
-    row.style.cursor = 'pointer';
+    listInput.appendChild(opt);
+
+    // スクロール一覧用要素
+    const row = document.createElement('div');
     row.textContent = item.name_jp;
-    row.onclick = ()=> show(item);
+    row.onclick = () => show(item.name_jp);
     allList.appendChild(row);
   });
 
-  // 2. 検索ボタン & Enter キーで検索
+  // 2. 検索＆Enterキーイベント
   document.getElementById('searchBtn').onclick = doSearch;
   document.getElementById('searchInput')
-    .addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch() });
+    .addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
 
-  async function doSearch(){
+  // 検索処理
+  async function doSearch() {
     const q = document.getElementById('searchInput').value.trim();
-    if(!q) return;
-    let params = new URLSearchParams(window.location.search);
-    params.set('q', q);
-    const data = await fetch(`${API}?${params.toString()}`)
-      .then(r=>r.json());
-    if(data.length){
+    if (!q) return;
+    const { data } = await supabase
+      .from('find_menus')
+      .select('*')
+      .ilike('name_jp', `%${q}%`)
+      .limit(1);
+    if (data && data.length) {
       show(data[0]);
     } else {
       alert('該当メニューが見つかりませんでした。');
     }
   }
 
-  function show(item){
+  // 結果表示
+  function show(itemOrName) {
+    // itemOrName が文字列なら再度データ取得
+    if (typeof itemOrName === 'string') {
+      supabase
+        .from('find_menus')
+        .select('*')
+        .eq('name_jp', itemOrName)
+        .limit(1)
+        .then(({ data }) => data[0] && display(data[0]));
+    } else {
+      display(itemOrName);
+    }
+  }
+
+  function display(item) {
     welcome.style.display = 'none';
     document.getElementById('resImg').src      = item.image_url;
     document.getElementById('resName').innerText  = item.name_jp;
