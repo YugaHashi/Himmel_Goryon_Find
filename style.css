@@ -1,0 +1,14 @@
+html, body { margin:0; padding:0; background:transparent; }
+.container {
+  max-width:360px; margin:auto; padding:16px;
+  background: rgba(255,255,255,0.9); border-radius:12px;
+}
+.search-bar { display:flex; gap:8px; margin-bottom:12px; }
+.search-bar input { flex:1; padding:8px; border:1px solid #ccc; border-radius:6px; }
+.search-bar button { padding:8px 12px; background:#a85c3d; color:#fff; border:none; border-radius:6px; }
+#results .menu-item { margin-bottom:12px; }
+#results img { width:100%; border-radius:8px; }
+#menu-list .menu-item { padding:8px; border-bottom:1px solid #eee; cursor:pointer; }
+#comment-form { margin-top:20px; display:flex; flex-direction:column; gap:8px; }
+#comment-form input, select, textarea { padding:8px; border:1px solid #ccc; border-radius:6px; }
+#comment-form button { padding:10px; background:#00b894; color:#fff; border:none; border-radius:6px; }
