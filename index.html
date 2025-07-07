@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Himmel ごりょんさん メニュー検索</title>
+</head>
+<body>
+  <div class="container">
+    <!-- 検索バー -->
+    <div class="search-bar">
+      <input id="search-input" list="menu-suggestions" placeholder="メニュー名を入力…" />
+      <datalist id="menu-suggestions"></datalist>
+      <button id="search-btn">検索</button>
+    </div>
+
+    <!-- 検索結果 -->
+    <section id="results">
+      <div class="menu-item">ようこそ！検索バーからどうぞ。</div>
+    </section>
+
+    <!-- 全メニュー一覧 -->
+    <section id="menu-list"></section>
+
+    <!-- コメント＋おすすめフォーム -->
+    <section id="comment-form">
+      <h3>あなたのクチコミ</h3>
+      <select id="form-menu"></select>
+      <input id="nickname" placeholder="ニックネーム (任意)" />
+      <select id="age-group">
+        <option value="">年代 (任意)</option>
+        <option>10代</option><option>20代</option><option>30代</option>
+        <option>40代</option><option>50代</option><option>60代以上</option>
+      </select>
+      <select id="gender">
+        <option value="">性別 (任意)</option>
+        <option>男性</option><option>女性</option><option>その他</option>
+      </select>
+      <textarea id="comment" placeholder="コメント…" rows="3"></textarea>
+      <label><input type="checkbox" id="vote-checkbox" /> おすすめに1票入れる</label>
+      <button id="submit-btn">投稿する</button>
+    </section>
+  </div>
+
+  <script type="module" src="clients.js"></script>
+</body>
+</html>
