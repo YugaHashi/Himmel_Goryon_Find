@@ -36,7 +36,7 @@ window.addEventListener('load', async () => {
       // 一覧
       els.menuList.insertAdjacentHTML('beforeend', `
         <div class="menu-item" data-id="${m.id}" data-name="${m.name_jp}">
-          ${m.name_jp} おすすめ🌟0
+          ${m.name_jp} 🌟0
         </div>
       `);
 
