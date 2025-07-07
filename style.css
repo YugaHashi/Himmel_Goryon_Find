@@ -42,6 +42,16 @@ html, body {
   margin-top: 12px;
 }
 
+.menu-item img {
+  width: 100%;
+  height: auto;
+  max-height: 200px; /* お好みで制限（任意） */
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 8px 0;
+  display: block;
+}
+
 /* 全メニュー一覧 */
 #menu-list-container {
   margin-top: 16px;
