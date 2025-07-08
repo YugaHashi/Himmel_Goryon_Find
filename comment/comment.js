@@ -14,81 +14,94 @@ const el = {
   txt: document.getElementById('comment'),
   vote: document.getElementById('vote-checkbox'),
   prog: document.getElementById('progress'),
-  unlocked: document.getElementById('unlocked-content'),
-  list: document.getElementById('unlock-list')
+  panel: document.getElementById('unlock-panel'),
+  msg: document.getElementById('unlock-message'),
+  btns: document.getElementById('unlock-buttons'),
+  secs: {
+    jsug: document.getElementById('jsuggestion'),
+    jquiz: document.getElementById('jquiz'),
+    jar: document.getElementById('jar')
+  }
 };
 
-// 初期ロード：メニュー取得＆進捗初期化
+const FEATURES = [
+  { anchor:'jsug', text:'🤖 AIおすすめ' },
+  { anchor:'jquiz', text:'🧠 豆知識クイズ' },
+  { anchor:'jar',  text:'👼 AR体験' }
+];
+
 window.addEventListener('DOMContentLoaded', async () => {
-  const { data: menus = [] } = await supabase.from('find_menus').select('id,name_jp');
+  const { data: menus=[] } = await supabase.from('find_menus').select('id,name_jp');
   menus.forEach(m => {
     el.menu.insertAdjacentHTML('beforeend',
       `<option value="${m.id}">${m.name_jp}</option>`
     );
   });
-  if (!localStorage.getItem('comment_count')) {
-    localStorage.setItem('comment_count', '0');
-  }
-  updateProgress();
+  if (!localStorage.getItem('comment_count')) localStorage.setItem('comment_count','0');
+  updateUI();
 });
 
-// 投稿処理
 el.form.addEventListener('submit', async e => {
   e.preventDefault();
   const menuId = +el.menu.value;
   const comment = el.txt.value.trim();
   if (!menuId || !comment) return alert('必要な情報を入力してください。');
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0,10);
   const key = `voted_${menuId}_${today}`;
-  if (localStorage.getItem(key)) {
-    return alert('本日は既に投稿済みです。');
-  }
+  if (localStorage.getItem(key)) return alert('本日は投稿済みです。');
 
-  // Supabaseに保存
+  // 保存
   await supabase.from('find_comments').insert([{
-    menu_id: menuId,
-    nickname: el.nick.value||null,
-    age_group: el.age.value||null,
-    gender: el.gen.value||null,
+    menu_id:menuId,
+    nickname:el.nick.value||null,
+    age_group:el.age.value||null,
+    gender:el.gen.value||null,
     comment,
-    is_softened: false
+    is_softened:false
   }]);
   if (el.vote.checked) {
-    await supabase.from('find_votes').insert([{ menu_id: menuId }]);
+    await supabase.from('find_votes').insert([{ menu_id:menuId }]);
   }
 
-  localStorage.setItem(key, 'true');
-  let count = Number(localStorage.getItem('comment_count')) + 1;
-  if (count > 3) count = 3;
-  localStorage.setItem('comment_count', String(count));
+  localStorage.setItem(key,'true');
+  let cnt = +localStorage.getItem('comment_count')+1;
+  if (cnt>3) cnt=3;
+  localStorage.setItem('comment_count',String(cnt));
 
   alert('コメントを投稿しました！');
   el.form.reset();
-  updateProgress();
+  updateUI();
 });
 
-// UI更新＆アンロックリンク生成
-function updateProgress() {
-  const count = Number(localStorage.getItem('comment_count'));
-  el.prog.value = count;
+function updateUI() {
+  const cnt = +localStorage.getItem('comment_count');
+  el.prog.value = cnt;
 
-  const items = [];
-  if (count >= 1) items.push({ text: '🤖 AIおすすめを体験', anchor: 'jsuggestion' });
-  if (count >= 2) items.push({ text: '🧠 クイズに挑戦', anchor: 'jquiz' });
-  if (count >= 3) items.push({ text: '👼 AR体験を開く', anchor: 'jar' });
+  // セクション開放
+  FEATURES.forEach((f,i) => {
+    if (i < cnt) {
+      el.secs[f.anchor].classList.remove('hidden');
+    }
+  });
 
-  if (items.length) {
-    el.unlocked.classList.remove('hidden');
-    el.list.innerHTML = items.map(item =>
-      `<li><a href="#" data-anchor="${item.anchor}">${item.text}</a></li>`
+  // アンロックパネル
+  if (cnt>0) {
+    el.panel.classList.remove('hidden');
+    const unlocked = FEATURES.slice(0, cnt);
+    const next = FEATURES[cnt];
+    el.msg.textContent = `レベル${cnt}達成！` +
+      (next
+        ? `次は「${next.text}」を開放しよう！`
+        : 'すべての体験が開放されました！'
+      );
+    el.btns.innerHTML = unlocked.map(f =>
+      `<button class="unlock" data-anchor="${f.anchor}">${f.text}</button>`
     ).join('');
-    // イベント付与
-    el.list.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        const target = e.currentTarget.dataset.anchor;
-        window.parent.location.hash = target;
+    el.btns.querySelectorAll('button').forEach(b => {
+      b.addEventListener('click', () => {
+        const id = b.dataset.anchor;
+        el.secs[id].scrollIntoView({ behavior:'smooth' });
       });
     });
   }
