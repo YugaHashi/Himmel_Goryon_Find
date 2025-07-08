@@ -1,0 +1,53 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: sans-serif;
+  color: #fff;
+}
+.container {
+  max-width: 360px;
+  margin: auto;
+  padding: 12px;
+}
+#level-ui {
+  margin-bottom: 12px;
+}
+progress {
+  width: 100%;
+  height: 12px;
+}
+.hidden {
+  display: none;
+}
+form, #unlocked-content {
+  margin-bottom: 16px;
+}
+form select, form input, form textarea {
+  width: 100%;
+  margin: 4px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: #000;
+}
+form button {
+  width: 100%;
+  padding: 10px;
+  background: #00b894;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#unlocked-content h4 {
+  margin: 8px 0;
+}
+#unlock-list li {
+  margin: 4px 0;
+}
+#unlock-list a {
+  color: #00d0ff;
+  text-decoration: none;
+}
