@@ -9,9 +9,9 @@ const el = {
   form: document.getElementById('comment-form'),
   menu: document.getElementById('form-menu'),
   nick: document.getElementById('nickname'),
-  age: document.getElementById('age-group'),
-  gen: document.getElementById('gender'),
-  txt: document.getElementById('comment'),
+  age:  document.getElementById('age-group'),
+  gen:  document.getElementById('gender'),
+  txt:  document.getElementById('comment'),
   vote: document.getElementById('vote-checkbox'),
   prog: document.getElementById('progress'),
   panel: document.getElementById('unlock-panel'),
@@ -25,19 +25,22 @@ const el = {
 };
 
 const FEATURES = [
-  { anchor:'jsug', text:'🤖 AIおすすめ' },
-  { anchor:'jquiz', text:'🧠 豆知識クイズ' },
-  { anchor:'jar',  text:'👼 AR体験' }
+  { key: 'jsug', text: '🤖 AIおすすめ' },
+  { key: 'jquiz', text: '🧠 豆知識クイズ' },
+  { key: 'jar', text: '👼 AR体験' }
 ];
 
 window.addEventListener('DOMContentLoaded', async () => {
-  const { data: menus=[] } = await supabase.from('find_menus').select('id,name_jp');
+  // メニュー選択肢
+  const { data: menus = [] } = await supabase.from('find_menus').select('id,name_jp');
   menus.forEach(m => {
     el.menu.insertAdjacentHTML('beforeend',
       `<option value="${m.id}">${m.name_jp}</option>`
     );
   });
-  if (!localStorage.getItem('comment_count')) localStorage.setItem('comment_count','0');
+  if (!localStorage.getItem('comment_count')) {
+    localStorage.setItem('comment_count','0');
+  }
   updateUI();
 });
 
@@ -47,29 +50,24 @@ el.form.addEventListener('submit', async e => {
   const comment = el.txt.value.trim();
   if (!menuId || !comment) return alert('必要な情報を入力してください。');
 
-  const today = new Date().toISOString().slice(0,10);
-  const key = `voted_${menuId}_${today}`;
-  if (localStorage.getItem(key)) return alert('本日は投稿済みです。');
-
-  // 保存
+  // Supabaseに保存
   await supabase.from('find_comments').insert([{
-    menu_id:menuId,
-    nickname:el.nick.value||null,
-    age_group:el.age.value||null,
-    gender:el.gen.value||null,
+    menu_id: menuId,
+    nickname: el.nick.value||null,
+    age_group: el.age.value||null,
+    gender: el.gen.value||null,
     comment,
-    is_softened:false
+    is_softened: false
   }]);
   if (el.vote.checked) {
-    await supabase.from('find_votes').insert([{ menu_id:menuId }]);
+    await supabase.from('find_votes').insert([{ menu_id: menuId }]);
   }
 
-  localStorage.setItem(key,'true');
-  let cnt = +localStorage.getItem('comment_count')+1;
-  if (cnt>3) cnt=3;
-  localStorage.setItem('comment_count',String(cnt));
+  let cnt = +localStorage.getItem('comment_count') + 1;
+  if (cnt > 3) cnt = 3;
+  localStorage.setItem('comment_count', String(cnt));
 
-  alert('コメントを投稿しました！');
+  alert('投稿ありがとうございました！');
   el.form.reset();
   updateUI();
 });
@@ -78,30 +76,26 @@ function updateUI() {
   const cnt = +localStorage.getItem('comment_count');
   el.prog.value = cnt;
 
-  // セクション開放
   FEATURES.forEach((f,i) => {
-    if (i < cnt) {
-      el.secs[f.anchor].classList.remove('hidden');
+    if (i < cnt && el.secs[f.key]) {
+      el.secs[f.key].classList.remove('hidden');
     }
   });
 
-  // アンロックパネル
-  if (cnt>0) {
+  if (cnt > 0) {
     el.panel.classList.remove('hidden');
     const unlocked = FEATURES.slice(0, cnt);
     const next = FEATURES[cnt];
     el.msg.textContent = `レベル${cnt}達成！` +
-      (next
-        ? `次は「${next.text}」を開放しよう！`
-        : 'すべての体験が開放されました！'
-      );
+      (next ? ` 次は「${next.text}」を開放しよう。` : ' すべての体験が開放されました！');
+
     el.btns.innerHTML = unlocked.map(f =>
-      `<button class="unlock" data-anchor="${f.anchor}">${f.text}</button>`
+      `<button data-key="${f.key}">${f.text}</button>`
     ).join('');
     el.btns.querySelectorAll('button').forEach(b => {
       b.addEventListener('click', () => {
-        const id = b.dataset.anchor;
-        el.secs[id].scrollIntoView({ behavior:'smooth' });
+        document.getElementById(b.dataset.key)
+          .scrollIntoView({ behavior:'smooth' });
       });
     });
   }
