@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div class="container">
@@ -13,8 +13,10 @@
     </div>
 
     <form id="comment-form">
-      <select id="form-menu"><option value="">メニューを選択</option></select>
-      <input id="nickname" placeholder="ニックネーム（任意）" />
+      <select id="form-menu">
+        <option value="">メニューを選択</option>
+      </select>
+      <input id="nickname" placeholder="ニックネーム（任意）"/>
       <select id="age-group">
         <option value="">年代（任意）</option>
         <option>10代</option><option>20代</option><option>30代</option>
@@ -24,12 +26,11 @@
         <option value="">性別（任意）</option>
         <option>男性</option><option>女性</option><option>その他</option>
       </select>
-      <textarea id="comment" placeholder="コメント…" rows="3"></textarea>
-      <label><input type="checkbox" id="vote-checkbox" /> おすすめに1票</label>
+      <textarea id="comment" rows="3" placeholder="コメント…"></textarea>
+      <label><input type="checkbox" id="vote-checkbox"/> おすすめに1票</label>
       <button type="submit">投稿する</button>
     </form>
 
-    <!-- アンロック情報 -->
     <section id="unlock-panel" class="hidden">
       <div id="unlock-message"></div>
       <div id="unlock-buttons" class="button-group"></div>
@@ -37,13 +38,13 @@
 
     <!-- 既存コンテンツ -->
     <section id="jsuggestion" class="hidden">
-      <!-- #jsuggestion のコンテンツがここにあります -->
+      <!-- AIおすすめのコンテンツ -->
     </section>
     <section id="jquiz" class="hidden">
-      <!-- #jquiz のコンテンツがここにあります -->
+      <!-- 豆知識クイズのコンテンツ -->
     </section>
     <section id="jar" class="hidden">
-      <!-- #jar のコンテンツがここにあります -->
+      <!-- AR体験のコンテンツ -->
     </section>
   </div>
   <script type="module" src="comment.js"></script>
