@@ -6,7 +6,7 @@ const openai = new OpenAIApi(new Configuration({
 
 export default async function handler(req, res) {
   const { comment } = req.body;
-  if (typeof comment !== "string" || !comment.trim()) {
+  if (!comment || typeof comment !== "string") {
     return res.status(400).json({ error: "コメントが空です。" });
   }
   const mod = await openai.createModeration({ input: comment });
