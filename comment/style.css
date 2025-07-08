@@ -1,53 +1,13 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  font-family: sans-serif;
-  color: #fff;
-}
-.container {
-  max-width: 360px;
-  margin: auto;
-  padding: 12px;
-}
-#level-ui {
-  margin-bottom: 12px;
-}
-progress {
-  width: 100%;
-  height: 12px;
-}
-.hidden {
-  display: none;
-}
-form, #unlocked-content {
-  margin-bottom: 16px;
-}
-form select, form input, form textarea {
-  width: 100%;
-  margin: 4px 0;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-  color: #000;
-}
-form button {
-  width: 100%;
-  padding: 10px;
-  background: #00b894;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-#unlocked-content h4 {
-  margin: 8px 0;
-}
-#unlock-list li {
-  margin: 4px 0;
-}
-#unlock-list a {
-  color: #00d0ff;
-  text-decoration: none;
-}
+html,body {margin:0;padding:0;background:transparent;font-family:sans-serif;color:#fff;}
+.container {max-width:360px;margin:auto;padding:12px;}
+#level-ui {margin-bottom:12px;}
+progress {width:100%;height:12px;margin-bottom:12px;}
+.hidden {display:none;}
+form, #unlock-panel, section {margin-bottom:16px;}
+form select,form input,form textarea {width:100%;margin:4px 0;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;color:#000;}
+form button {width:100%;padding:10px;background:#00b894;color:#fff;border:none;border-radius:6px;cursor:pointer;}
+#unlock-panel {background:rgba(0,0,0,0.6);padding:12px;border-radius:8px;}
+#unlock-message {margin-bottom:8px;font-weight:bold;}
+.button-group button {margin-right:8px;margin-bottom:8px;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;}
+.button-group button.unlock {background:#0984e3;color:#fff;}
+section#jsuggestion, section#jquiz, section#jar {padding:12px;background:rgba(255,255,255,0.1);border-radius:8px;}
