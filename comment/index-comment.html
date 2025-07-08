@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div id="level-ui">
+      <label>体験レベル：</label>
+      <progress id="progress" max="3" value="0"></progress>
+    </div>
+
+    <form id="comment-form">
+      <select id="form-menu"><option value="">メニューを選択</option></select>
+      <input id="nickname" placeholder="ニックネーム（任意）" />
+      <select id="age-group">
+        <option value="">年代（任意）</option>
+        <option>10代</option><option>20代</option><option>30代</option>
+        <option>40代</option><option>50代</option><option>60代以上</option>
+      </select>
+      <select id="gender">
+        <option value="">性別（任意）</option>
+        <option>男性</option><option>女性</option><option>その他</option>
+      </select>
+      <textarea id="comment" placeholder="コメント…" rows="3"></textarea>
+      <label><input type="checkbox" id="vote-checkbox" /> おすすめに1票</label>
+      <button type="submit">投稿する</button>
+    </form>
+
+    <div id="unlocked-content" class="hidden">
+      <h4>🎉 新しい体験を開放しました！</h4>
+      <ul id="unlock-list"></ul>
+    </div>
+  </div>
+  <script type="module" src="comment.js"></script>
+</body>
+</html>
