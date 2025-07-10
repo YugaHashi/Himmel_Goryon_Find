@@ -1,0 +1,12 @@
+/* モバイルファースト */
+html,body{margin:0;padding:0;font-family:sans-serif;background:#fff;color:#333}
+.container{padding:16px;max-width:480px;margin:auto}
+#level-ui{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+progress{flex:1;height:14px;border-radius:7px;appearance:none}
+progress::-webkit-progress-bar{background:#eee;border-radius:7px}
+progress::-webkit-progress-value{border-radius:7px}
+form{margin-bottom:24px}
+form select,form input,form textarea{width:100%;padding:10px;margin:6px 0;border:1px solid #ccc;border-radius:6px;box-sizing:border-box}
+form button{width:100%;padding:12px;background:#00b894;color:#fff;border:none;border-radius:6px;font-size:1rem;cursor:pointer}
+#unlock-panel{background:#f0f0f0;padding:12px;border-radius:8px}
+.button-group button{display:block;width:100%;padding:10px;margin:6px 0;border:none;border-radius:6px;color:#fff;font-size:1rem;cursor:pointer}
