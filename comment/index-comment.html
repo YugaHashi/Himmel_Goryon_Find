@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style-comment.css"/>
+  <title>口コミ＆体験レベル</title>
 </head>
 <body>
   <div class="container">
     <div id="level-ui">
       <label>体験レベル：</label>
       <progress id="progress" max="3" value="0"></progress>
+      <span id="level-label"></span>
     </div>
 
     <form id="comment-form">
@@ -27,6 +29,7 @@
         <option>男性</option><option>女性</option><option>その他</option>
       </select>
       <textarea id="comment" rows="3" placeholder="コメント…"></textarea>
+      <input type="file" id="image_user" accept="image/*" />
       <label><input type="checkbox" id="vote-checkbox"/> おすすめに1票</label>
       <button type="submit">投稿する</button>
     </form>
@@ -36,16 +39,12 @@
       <div id="unlock-buttons" class="button-group"></div>
     </section>
 
-    <!-- 既存コンテンツ -->
-    <section id="jsuggestion" class="hidden">
-      <!-- AIおすすめのコンテンツ -->
-    </section>
-    <section id="jquiz" class="hidden">
-      <!-- 豆知識クイズのコンテンツ -->
-    </section>
-    <section id="jar" class="hidden">
-      <!-- AR体験のコンテンツ -->
-    </section>
+    <div id="comment-list" class="comment-list"></div>
+    <button id="load-more" class="more-comments-btn">その他クチコミを下に表示</button>
+
+    <section id="jsug" class="hidden"></section>
+    <section id="jquiz" class="hidden"></section>
+    <section id="jar" class="hidden"></section>
   </div>
   <script type="module" src="comment.js"></script>
 </body>
