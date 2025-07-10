@@ -6,28 +6,42 @@ const supabase = createClient(
 );
 
 async function loadRanking() {
+  const ul = document.getElementById('ranking-list');
+  ul.innerHTML = '<li>読み込み中…</li>';
+
   const now = new Date();
   const firstDay = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01T00:00:00Z`;
 
-  const { data: votes = [] } = await supabase
+  const { data: votes, error } = await supabase
     .from('find_votes')
-    .select('menu_name,created_at')
+    .select('menu_name, created_at')
     .gte('created_at', firstDay);
 
+  if (error) {
+    ul.innerHTML = `<li>データ取得エラー: ${error.message}</li>`;
+    console.error(error);
+    return;
+  }
+  if (!votes || votes.length === 0) {
+    ul.innerHTML = '<li>今月の投票データがありません。</li>';
+    return;
+  }
+
+  // 投票数を集計
   const counts = votes.reduce((acc, { menu_name }) => {
     acc[menu_name] = (acc[menu_name] || 0) + 1;
     return acc;
   }, {});
 
+  // 上位3件
   const top3 = Object.entries(counts)
     .sort(([,a],[,b]) => b - a)
     .slice(0,3);
 
-  const ul = document.getElementById('ranking-list');
   ul.innerHTML = '';
   top3.forEach(([menu, cnt], i) => {
     ul.insertAdjacentHTML('beforeend',
-      `<li>${i+1}位：${menu}（${cnt}票）</li>`
+      `<li>${i+1}位：${menu} （${cnt}票）</li>`
     );
   });
 }
