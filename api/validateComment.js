@@ -1,4 +1,4 @@
-// validateComment.js
+// 動的NGワード＋Moderationチェックのみ。提案はしない
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 import { Configuration, OpenAIApi } from "openai";
 
@@ -15,26 +15,19 @@ export default async function handler(req, res) {
   if (!comment || typeof comment !== "string") {
     return res.status(400).json({ error: "コメントが空です。" });
   }
-
   // 動的NGワード取得
-  const { data: ngs = [] } = await supabase
-    .from('ng_words')
-    .select('word')
-    .eq('active', true);
+  const { data: ngs = [] } = await supabase.from('ng_words').select('word').eq('active', true);
   const badWords = ngs.map(r => r.word);
-
-  // 静的チェック
+  // キーワードチェック
   for (const w of badWords) {
     if (comment.includes(w)) {
       return res.status(400).json({ error: "不適切な表現が含まれています。" });
     }
   }
-
-  // OpenAI Moderation
+  // Moderation API
   const mod = await openai.createModeration({ input: comment });
   if (mod.data.results[0].flagged) {
     return res.status(400).json({ error: "不適切な表現が含まれています。" });
   }
-
   res.status(200).json({ ok: true });
 }
