@@ -4,17 +4,18 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <link rel="stylesheet" href="style-search.css"/>
-  <title>メニュー検索</title>
+  <title>〜メニュー検索〜</title>
 </head>
 <body>
   <div class="container">
+    <h1>〜メニュー検索〜</h1>
     <div class="search-bar">
-      <input id="search-input" list="menu-suggestions" placeholder="メニュー名を検索…"/>
-      <datalist id="menu-suggestions"></datalist>
+      <input id="search-input" list="menu-suggestions" placeholder="メニュー名を入力…" autocomplete="off"/>
       <button id="search-btn">検索</button>
     </div>
+    <datalist id="menu-suggestions"></datalist>
     <section id="results" class="results">
-      <img id="placeholder" src="result.png" alt="プレースホルダー" class="placeholder"/>
+      <img id="placeholder" src="assets/result.png" alt="検索前" class="placeholder"/>
     </section>
   </div>
   <script type="module" src="search.js"></script>
