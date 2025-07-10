@@ -1,3 +1,4 @@
+// comment/comment.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const supabase = createClient(
@@ -31,7 +32,6 @@ const FEATURES = [
 ];
 
 window.addEventListener('DOMContentLoaded', async () => {
-  // メニュー選択肢
   const { data: menus = [] } = await supabase.from('find_menus').select('id,name_jp');
   menus.forEach(m => {
     el.menu.insertAdjacentHTML('beforeend',
@@ -50,17 +50,23 @@ el.form.addEventListener('submit', async e => {
   const comment = el.txt.value.trim();
   if (!menuId || !comment) return alert('必要な情報を入力してください。');
 
-  // Supabaseに保存
+  // ① コメント保存
   await supabase.from('find_comments').insert([{
     menu_id: menuId,
-    nickname: el.nick.value||null,
-    age_group: el.age.value||null,
-    gender: el.gen.value||null,
+    nickname: el.nick.value || null,
+    age_group: el.age.value || null,
+    gender: el.gen.value || null,
     comment,
     is_softened: false
   }]);
+
+  // ② 投票チェックがあれば、menu_name と一緒に find_votes に保存
   if (el.vote.checked) {
-    await supabase.from('find_votes').insert([{ menu_id: menuId }]);
+    const menuName = el.menu.options[el.menu.selectedIndex].text;
+    await supabase.from('find_votes').insert([{
+      menu_id: menuId,
+      menu_name: menuName
+    }]);
   }
 
   let cnt = +localStorage.getItem('comment_count') + 1;
