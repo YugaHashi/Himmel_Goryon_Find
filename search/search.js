@@ -13,29 +13,28 @@ const els = {
   placeholder: document.getElementById('placeholder')
 };
 
-window.addEventListener('DOMContentLoaded', async ()=>{
+window.addEventListener('DOMContentLoaded', async () => {
   const { data: menus = [] } = await supabase.from('find_menus').select('name_jp');
-  menus.forEach(m=>{
+  menus.forEach(m => {
     const opt = document.createElement('option');
     opt.value = m.name_jp;
     els.list.appendChild(opt);
   });
 });
 
-els.btn.addEventListener('click', async ()=>{
+els.btn.addEventListener('click', async () => {
   const name = els.input.value.trim();
   if (!name) return;
   els.placeholder.style.display = 'none';
   els.resultWrap.classList.add('visible');
   els.resultWrap.innerHTML = '<p>読み込み中…</p>';
 
-  const { data: m } = await supabase
+  const { data: m, error } = await supabase
     .from('find_menus')
-    .select('id,name_jp,image_url,description')
+    .select('*')
     .eq('name_jp', name)
     .single();
-
-  if (!m) {
+  if (error || !m) {
     els.resultWrap.innerHTML = '<p>該当メニューがありません。</p>';
     return;
   }
@@ -43,7 +42,7 @@ els.btn.addEventListener('click', async ()=>{
   const firstDay = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-01T00:00:00Z`;
   const { count } = await supabase
     .from('find_comments')
-    .select('*',{ count:'exact' })
+    .select('*', { count: 'exact' })
     .eq('menu_id', m.id)
     .gte('created_at', firstDay);
 
@@ -51,7 +50,7 @@ els.btn.addEventListener('click', async ()=>{
     .from('find_kuchikomi')
     .select('nickname,age_group,gender,comment,image_user')
     .eq('menu_id', m.id)
-    .order('created_at',{ ascending:false })
+    .order('created_at', { ascending: false })
     .limit(3);
 
   let html = `
@@ -59,15 +58,15 @@ els.btn.addEventListener('click', async ()=>{
       <p class="menu-name">${m.name_jp}</p>
       <p class="score">⭐${count}</p>
     </div>
-    <img src="${m.image_url}" alt="${m.name_jp}" width="285" class="menu-photo"/>
-    <p class="description">${m.description}</p>
+    <img src="${m.image_url || ''}" alt="${m.name_jp}" width="285" class="menu-photo"/>
+    <p class="description">${m.description || ''}</p>
     <div class="comment-list">`;
 
   if (cs.length) {
     cs.forEach(c => {
       const imageUrl = c.image_user
         ? `https://labmhtrafdslfwqmzgky.supabase.co/storage/v1/object/public/user-images/${c.image_user}`
-        : 'default-avatar.png';
+        : 'https://himmel-goryon-find.vercel.app/default-avatar.png';
       html += `
         <div class="comment-item">
           <a href="${imageUrl}" target="_blank">
@@ -91,13 +90,13 @@ els.btn.addEventListener('click', async ()=>{
       .from('find_kuchikomi')
       .select('nickname,age_group,gender,comment,image_user')
       .eq('menu_id', m.id)
-      .order('created_at',{ ascending:false })
+      .order('created_at', { ascending: false })
       .limit(8);
     const list = document.querySelector('.comment-list');
     more.forEach(c => {
       const imageUrl = c.image_user
         ? `https://labmhtrafdslfwqmzgky.supabase.co/storage/v1/object/public/user-images/${c.image_user}`
-        : 'default-avatar.png';
+        : 'https://himmel-goryon-find.vercel.app/default-avatar.png';
       list.insertAdjacentHTML('beforeend', `
         <div class="comment-item">
           <a href="${imageUrl}" target="_blank">
