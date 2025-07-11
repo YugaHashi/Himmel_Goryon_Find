@@ -5,12 +5,12 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <link rel="stylesheet" href="style-comment.css"/>
-  <title>口コミ & 体験レベル</title>
+  <title>口コミ & 南平台ごりょんさん Lv</title>
 </head>
 <body>
   <div class="container">
     <div id="level-ui">
-      <label>体験レベル：</label>
+      <label>南平台ごりょんさん Lv</label>
       <progress id="progress" max="3" value="0"></progress>
       <span id="level-label">Lv 0</span>
     </div>
@@ -28,16 +28,16 @@
         <option value="">性別（任意）</option>
         <option>男性</option><option>女性</option><option>その他</option>
       </select>
-      <textarea id="comment" rows="3" placeholder="コメント…"></textarea>
+      <textarea id="comment" rows="3" placeholder="ご意見・ご要望を記入…"></textarea>
       <input type="file" id="image_user" accept=".jpg,.jpeg,.png,.webp"/>
       <label><input type="checkbox" id="vote-checkbox"/> おすすめに1票</label>
-      <button type="submit">投稿する</button>
+      <button type="submit">共有する</button>
     </form>
 
     <div id="features" class="button-group">
-      <button id="btn-jsuggestion" disabled>🤖 AIおすすめ（1回のクチコミ共有で利用可能）</button>
-      <button id="btn-jquiz"      disabled>🧠 豆知識クイズ（2回のクチコミ共有で利用可能）</button>
-      <button id="btn-jar"        disabled>👼 AR体験（3回のクチコミ共有で利用可能）</button>
+      <button id="btn-jsuggestion" disabled>AIおすすめ（1回の共有で利用可）</button>
+      <button id="btn-jquiz"      disabled>豆知識クイズ（2回の共有で利用可）</button>
+      <button id="btn-jar"        disabled>AR体験（3回の共有で利用可）</button>
     </div>
 
     <script type="module" src="comment.js"></script>
