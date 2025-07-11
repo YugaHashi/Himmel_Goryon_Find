@@ -17,6 +17,7 @@ html, body {
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
+  color: #fff;
 }
 progress {
   flex: 1;
@@ -67,4 +68,7 @@ form button {
 }
 .button-group button:enabled {
   opacity: 1;
+}
+#voteCheckbox {
+  color: #fff;
 }
