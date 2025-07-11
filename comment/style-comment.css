@@ -1,24 +1,25 @@
-/* comment/style-comment.css */
 html, body {
   margin: 0;
   padding: 0;
-  /* 背景はCarrd側に任せる */
   background: transparent;
   color: #333;
   font-family: sans-serif;
 }
+
 .container {
   padding: 16px;
   max-width: 285px;
   margin: auto;
 }
+
 #level-ui {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
-  color: #fff;
+  color: #fff; /* ごりょんLvテキストを白に */
 }
+
 progress {
   flex: 1;
   height: 14px;
@@ -32,6 +33,7 @@ progress::-webkit-progress-bar {
 progress::-webkit-progress-value {
   border-radius: 7px;
 }
+
 form {
   margin-bottom: 24px;
 }
@@ -45,6 +47,7 @@ form textarea {
   border-radius: 6px;
   box-sizing: border-box;
 }
+
 form button {
   width: 100%;
   padding: 12px;
@@ -55,6 +58,18 @@ form button {
   font-size: 1rem;
   cursor: pointer;
 }
+
+/* ✅ おすすめに1票のテキストを白に */
+#vote-checkbox + label,
+label[for="vote-checkbox"] {
+  color: #fff;
+}
+
+/* ↑ `label`が明示されていない場合は fallback として以下を追加 */
+form label {
+  color: #fff;
+}
+
 .button-group button {
   width: 100%;
   padding: 12px;
@@ -68,7 +83,4 @@ form button {
 }
 .button-group button:enabled {
   opacity: 1;
-}
-#vote-checkbox {
-  color: #fff;
 }
