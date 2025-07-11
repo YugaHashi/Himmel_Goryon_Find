@@ -16,9 +16,9 @@ async function loadRanking() {
     .gte('created_at', firstDay);
 
   const counts = coms.reduce((a,{menu_id})=>{
-    a[menu_id]=(a[menu_id]||0)+1;
+    a[menu_id] = (a[menu_id]||0) + 1;
     return a;
-  },{});
+  }, {});
   const top3 = Object.entries(counts)
     .sort(([,a],[,b])=>b-a)
     .slice(0,3)
@@ -37,5 +37,5 @@ async function loadRanking() {
 
 window.addEventListener('DOMContentLoaded', ()=>{
   loadRanking();
-  supabase.from('find_comments').on('INSERT',()=>loadRanking()).subscribe();
+  supabase.from('find_comments').on('INSERT', ()=>loadRanking()).subscribe();
 });
