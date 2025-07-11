@@ -11,14 +11,20 @@
   <div class="container">
     <h1>〜メニュー検索〜</h1>
     <div class="search-bar">
-      <input id="search-input" list="menu-suggestions" placeholder="メニュー名を入力…" autocomplete="off"/>
+      <input
+        id="search-input"
+        list="menu-suggestions"
+        placeholder="メニュー名を入力…"
+        autocomplete="off"
+      />
       <button id="search-btn">検索</button>
     </div>
     <datalist id="menu-suggestions"></datalist>
     <section id="results" class="results">
+      <!-- public/result.png に配置したので、ドメイン直下を参照 -->
       <img
         id="placeholder"
-        src="https://yugahashi.github.io/Himmel_Goryon_Find/assets/result.png"
+        src="https://himmel-goryon-find.vercel.app/result.png"
         alt="検索前"
         width="285"
         class="placeholder"
