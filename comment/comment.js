@@ -5,6 +5,15 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhYm1odHJhZmRzbGZ3cW16Z2t5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2OTAzNzksImV4cCI6MjA2NTI2NjM3OX0.CviQ3lzngfvqDFwEtDw5cTRSEICWliunXngYCokhbNs'
 );
 
+const BTN_COLOR = '#339aff';
+const MAX_PER_DAY = 3;
+const STORAGE_KEY = 'posts_by_date';
+const FEATURES = [
+  { key: 'jsuggestion', text: 'AIおすすめ' },
+  { key: 'jquiz',      text: '豆知識クイズ' },
+  { key: 'jar',        text: 'AR体験' }
+];
+
 const el = {
   form:    document.getElementById('comment-form'),
   menu:    document.getElementById('form-menu'),
@@ -23,18 +32,8 @@ const el = {
   }
 };
 
-const FEATURES = [
-  { key: 'jsuggestion', text: '🤖 AIおすすめ' },
-  { key: 'jquiz',      text: '🧠 豆知識クイズ' },
-  { key: 'jar',        text: '👼 AR体験' }
-];
-const COLORS = ['#77b8ff','#339aff','#0077ff'];
-const STORAGE_KEY = 'posts_by_date';
-
 window.addEventListener('DOMContentLoaded', async () => {
-  const { data: menus = [] } = await supabase
-    .from('find_menus')
-    .select('id,name_jp');
+  const { data: menus = [] } = await supabase.from('find_menus').select('id,name_jp');
   menus.forEach(m => {
     el.menu.insertAdjacentHTML('beforeend',
       `<option value="${m.id}">${m.name_jp}</option>`
@@ -52,8 +51,8 @@ el.form.addEventListener('submit', async e => {
   const today = new Date().toISOString().slice(0,10);
   const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   const todayList = all[today] || [];
-  if (todayList.includes(menuId)) return alert('本日は既にこのメニューに投稿済みです。');
-  if (todayList.length >= 3)    return alert('本日の投稿上限（3件）に達しました。');
+  if (todayList.includes(menuId)) return alert('本日は既にこのメニューに共有済みです。');
+  if (todayList.length >= MAX_PER_DAY) return alert(`本日の共有上限（${MAX_PER_DAY}件）に達しました。`);
 
   // 画像アップロード
   let imageFile = null;
@@ -68,12 +67,14 @@ el.form.addEventListener('submit', async e => {
     const { error: upErr } = await supabase
       .storage
       .from('user-images')
-      .upload(fname, file, { upsert: false });
-    if (upErr) return alert('画像アップロードに失敗しました。');
+      .upload(fname, file, { upsert: true });
+    if (upErr) {
+      console.error(upErr);
+      return alert('画像のアップロードに失敗しました。');
+    }
     imageFile = fname;
   }
 
-  // コメント保存
   await supabase.from('find_comments').insert([{
     menu_id:    menuId,
     nickname:   el.nick.value || null,
@@ -83,7 +84,6 @@ el.form.addEventListener('submit', async e => {
     image_user: imageFile
   }]);
 
-  // 人気投票
   if (el.vote.checked) {
     const menuName = el.menu.options[el.menu.selectedIndex].text;
     await supabase.from('find_votes').insert([{ menu_id: menuId, menu_name: menuName }]);
@@ -102,23 +102,22 @@ function updateUI() {
   const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   const cnt = (all[today] || []).length;
 
-  // 進捗バー
+  // プログレス＆ラベル
   el.prog.value = cnt;
-  el.prog.style.backgroundColor = COLORS[cnt-1] || COLORS[0];
+  el.prog.style.backgroundColor = BTN_COLOR;
+  document.getElementById('level-label').textContent = `Lv ${cnt}`;
 
-  // 投稿ボタン
+  // 共有ボタン
   const posted = (all[today] || []).includes(+el.menu.value);
-  el.submit.disabled = posted || cnt >= 3;
-  el.submit.textContent = posted
-    ? '投稿済み'
-    : (cnt >= 3 ? '本日の上限達成' : '投稿する');
+  el.submit.disabled = posted || cnt >= MAX_PER_DAY;
+  el.submit.textContent = posted ? '共有済み' : (cnt >= MAX_PER_DAY ? '本日の上限達成' : '共有する');
 
-  // 機能アンロックボタン
+  // 機能ボタン
   FEATURES.forEach((f, i) => {
     const btn = el.feats[f.key];
     btn.disabled = cnt <= i;
-    btn.textContent = `${f.text}（${i+1}回のクチコミ共有で利用可能）`;
-    btn.style.background = COLORS[i];
+    btn.textContent = `${f.text}（${i+1}回の共有で利用可）`;
+    btn.style.background = BTN_COLOR;
     btn.onclick = () => {
       if (!btn.disabled) {
         window.location.hash = f.key;
