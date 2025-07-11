@@ -20,9 +20,8 @@ export default async function handler(req, res) {
     .from('ng_words')
     .select('word')
     .eq('active', true);
-  const badWords = ngs.map(r => r.word);
-  for (const w of badWords) {
-    if (comment.includes(w)) {
+  for (const { word } of ngs) {
+    if (comment.includes(word)) {
       return res.status(400).json({ error: "不適切な表現が含まれています。" });
     }
   }
