@@ -76,12 +76,14 @@ form label {
   margin: 6px 0;
   border: none;
   border-radius: 6px;
+  background-color: #9BB8AC;  
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
   opacity: 0.5;
-  background-color: #9BB8AC;
+  white-space: normal; 
 }
+
 .button-group button:enabled {
   opacity: 1;
 }
