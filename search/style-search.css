@@ -53,11 +53,7 @@ h1 {
 }
 .placeholder {
   width: 100%;
-  aspect-ratio: 881 / 1125;
-  height: auto;
-  border-radius: 20px;
-  display: block;
-  margin: 0 auto;
+  border-radius: 8px;
 }
 .result-header {
   display: flex;
