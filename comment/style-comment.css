@@ -80,6 +80,7 @@ form label {
   font-size: 1rem;
   cursor: pointer;
   opacity: 0.5;
+  background-color: #9BB8AC;
 }
 .button-group button:enabled {
   opacity: 1;
