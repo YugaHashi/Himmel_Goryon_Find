@@ -69,6 +69,6 @@ form button {
 .button-group button:enabled {
   opacity: 1;
 }
-#voteCheckbox {
+#vote-checkbox {
   color: #fff;
 }
