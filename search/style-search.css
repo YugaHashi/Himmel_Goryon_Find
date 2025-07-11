@@ -34,12 +34,14 @@ h1 {
   font-size: 1rem;
 }
 .search-bar button {
-  padding: 0 12px;
+  padding: 4px 12px;
   background: #d35400;
   color: #fff;
   border: none;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   cursor: pointer;
+  line-height: 1;
+  height: 32px;
 }
 .results {
   background: rgba(255,255,255,0.1);
@@ -49,7 +51,11 @@ h1 {
 }
 .placeholder {
   width: 100%;
-  border-radius: 8px;
+  aspect-ratio: 881 / 1125;
+  height: auto;
+  border-radius: 20px;
+  display: block;
+  margin: 0 auto;
 }
 .result-header {
   display: flex;
