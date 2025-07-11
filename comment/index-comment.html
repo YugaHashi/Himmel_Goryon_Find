@@ -1,3 +1,4 @@
+<!-- comment/index-comment.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,22 +12,34 @@
     <div id="level-ui">
       <label>体験レベル：</label>
       <progress id="progress" max="3" value="0"></progress>
-      <span id="level-label"></span>
+      <span id="level-label">Lv 0</span>
     </div>
     <form id="comment-form">
-      <select id="form-menu"><option value="">メニューを選択</option></select>
+      <select id="form-menu">
+        <option value="">メニューを選択</option>
+      </select>
       <input id="nickname" placeholder="ニックネーム（任意）"/>
-      <select id="age-group"><option value="">年代（任意）</option><option>10代</option><option>20代</option><option>30代</option><option>40代</option><option>50代</option><option>60代以上</option></select>
-      <select id="gender"><option value="">性別（任意）</option><option>男性</option><option>女性</option><option>その他</option></select>
+      <select id="age-group">
+        <option value="">年代（任意）</option>
+        <option>10代</option><option>20代</option><option>30代</option>
+        <option>40代</option><option>50代</option><option>60代以上</option>
+      </select>
+      <select id="gender">
+        <option value="">性別（任意）</option>
+        <option>男性</option><option>女性</option><option>その他</option>
+      </select>
       <textarea id="comment" rows="3" placeholder="コメント…"></textarea>
       <input type="file" id="image_user" accept=".jpg,.jpeg,.png,.webp"/>
       <label><input type="checkbox" id="vote-checkbox"/> おすすめに1票</label>
       <button type="submit">投稿する</button>
     </form>
-    <section id="unlock-panel" class="hidden">
-      <div id="unlock-message"></div>
-      <div id="unlock-buttons" class="button-group"></div>
-    </section>
+
+    <div id="features" class="button-group">
+      <button id="btn-jsuggestion" disabled>🤖 AIおすすめ（1回のクチコミ共有で利用可能）</button>
+      <button id="btn-jquiz"      disabled>🧠 豆知識クイズ（2回のクチコミ共有で利用可能）</button>
+      <button id="btn-jar"        disabled>👼 AR体験（3回のクチコミ共有で利用可能）</button>
+    </div>
+
     <script type="module" src="comment.js"></script>
   </div>
 </body>
