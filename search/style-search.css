@@ -34,11 +34,12 @@ h1 {
   font-size: 1rem;
 }
 .search-bar button {
+  width: 20px;
   padding: 0 12px;                /* 上下paddingをなくす */
   background: #d35400;
   color: #fff;
   border: none;
-  font-size: 0.8rem;
+  font-size: 1rem;
   cursor: pointer;
   line-height: 32px;             /* 高さと同じにして中央寄せ */
   height: 32px;
