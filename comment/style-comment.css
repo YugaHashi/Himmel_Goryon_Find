@@ -18,7 +18,7 @@ html, body {
   gap: 8px;
   margin-bottom: 16px;
   color: #fff; /* ごりょんLvテキストを白に */
-}
+}/* ごりょんLvテキストを白に */
 
 progress {
   flex: 1;
