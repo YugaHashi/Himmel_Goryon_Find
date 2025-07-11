@@ -1,13 +1,70 @@
 /* comment/style-comment.css */
-html,body{margin:0;padding:0;font-family:sans-serif;background:#fff;color:#333}
-.container{padding:16px;max-width:285px;margin:auto}
-#level-ui{display:flex;align-items:center;gap:8px;margin-bottom:16px}
-progress{flex:1;height:14px;border-radius:7px;appearance:none}
-progress::-webkit-progress-bar{background:#eee;border-radius:7px}
-progress::-webkit-progress-value{border-radius:7px}
-form{margin-bottom:24px}
-form select,form input,form textarea{width:100%;padding:10px;margin:6px 0;border:1px solid #ccc;border-radius:6px;box-sizing:border-box}
-form button{width:100%;padding:12px;background:#00b894;color:#fff;border:none;border-radius:6px;font-size:1rem;cursor:pointer}
-#features{margin-bottom:24px}
-.button-group button{width:100%;padding:12px;margin:6px 0;border:none;border-radius:6px;color:#fff;font-size:1rem;cursor:pointer;opacity:0.5}
-.button-group button:enabled{opacity:1}
+html, body {
+  margin: 0;
+  padding: 0;
+  /* 背景はCarrd側に任せる */
+  background: transparent;
+  color: #333;
+  font-family: sans-serif;
+}
+.container {
+  padding: 16px;
+  max-width: 285px;
+  margin: auto;
+}
+#level-ui {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+progress {
+  flex: 1;
+  height: 14px;
+  border-radius: 7px;
+  appearance: none;
+}
+progress::-webkit-progress-bar {
+  background: #eee;
+  border-radius: 7px;
+}
+progress::-webkit-progress-value {
+  border-radius: 7px;
+}
+form {
+  margin-bottom: 24px;
+}
+form select,
+form input,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+form button {
+  width: 100%;
+  padding: 12px;
+  background: #339aff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.button-group button {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.5;
+}
+.button-group button:enabled {
+  opacity: 1;
+}
