@@ -1,3 +1,4 @@
+// search/search.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 const supabase = createClient(
   'https://labmhtrafdslfwqmzgky.supabase.co',
@@ -13,7 +14,7 @@ const els = {
 };
 
 window.addEventListener('DOMContentLoaded', async ()=>{
-  const { data: menus=[] } = await supabase.from('find_menus').select('name_jp');
+  const { data: menus = [] } = await supabase.from('find_menus').select('name_jp');
   menus.forEach(m=>{
     const opt = document.createElement('option');
     opt.value = m.name_jp;
@@ -24,43 +25,54 @@ window.addEventListener('DOMContentLoaded', async ()=>{
 els.btn.addEventListener('click', async ()=>{
   const name = els.input.value.trim();
   if (!name) return;
-  els.placeholder.style.display='none';
+  els.placeholder.style.display = 'none';
   els.resultWrap.classList.add('visible');
-  els.resultWrap.innerHTML='<p>読み込み中…</p>';
+  els.resultWrap.innerHTML = '<p>読み込み中…</p>';
 
   const { data: m } = await supabase
-    .from('find_menus').select('*').eq('name_jp',name).single();
+    .from('find_menus')
+    .select('id,name_jp,image_url,description')
+    .eq('name_jp', name)
+    .single();
+
   if (!m) {
-    els.resultWrap.innerHTML='<p>該当メニューがありません。</p>';
+    els.resultWrap.innerHTML = '<p>該当メニューがありません。</p>';
     return;
   }
 
   const firstDay = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-01T00:00:00Z`;
   const { count } = await supabase
     .from('find_comments')
-    .select('*',{count:'exact'})
-    .eq('menu_id',m.id)
-    .gte('created_at',firstDay);
+    .select('*',{ count:'exact' })
+    .eq('menu_id', m.id)
+    .gte('created_at', firstDay);
 
-  const { data: cs=[] } = await supabase
+  const { data: cs = [] } = await supabase
     .from('find_kuchikomi')
     .select('nickname,age_group,gender,comment,image_user')
-    .eq('menu_id',m.id)
-    .order('created_at',{ascending:false})
+    .eq('menu_id', m.id)
+    .order('created_at',{ ascending:false })
     .limit(3);
 
-  // 検索結果テンプレート
   let html = `
     <div class="result-header">
       <p class="menu-name">${m.name_jp}</p>
       <p class="score">⭐${count}</p>
     </div>
+    <img src="${m.image_url}" alt="${m.name_jp}" width="285" class="menu-photo"/>
+    <p class="description">${m.description}</p>
     <div class="comment-list">`;
+
   if (cs.length) {
-    cs.forEach(c=>{
+    cs.forEach(c => {
+      const imageUrl = c.image_user
+        ? `https://labmhtrafdslfwqmzgky.supabase.co/storage/v1/object/public/user-images/${c.image_user}`
+        : 'default-avatar.png';
       html += `
         <div class="comment-item">
-          <img src="${c.image_user||'default-avatar.png'}" class="user-icon"/>
+          <a href="${imageUrl}" target="_blank">
+            <img src="${imageUrl}" class="user-icon"/>
+          </a>
           <div class="text">
             <div class="meta">${c.nickname||'匿名'} (${c.age_group||'-'},${c.gender||'-'})</div>
             <div class="body">${c.comment}</div>
@@ -70,29 +82,33 @@ els.btn.addEventListener('click', async ()=>{
   } else {
     html += `<p class="no-comment">まだコメントがありません。</p>`;
   }
-  html += `</div>`;
-  // “その他”ボタンは常に出すが、押しても空なら消える
-  html += `<button id="load-more" class="more-comments-btn">その他クチコミを下に表示</button>`;
+  html += `</div>
+    <button id="load-more" class="more-comments-btn">その他クチコミを下に表示</button>`;
   els.resultWrap.innerHTML = html;
 
-  // ボタン設置
-  document.getElementById('load-more').onclick = async ()=>{
-    const { data: more=[] } = await supabase
+  document.getElementById('load-more').onclick = async () => {
+    const { data: more = [] } = await supabase
       .from('find_kuchikomi')
       .select('nickname,age_group,gender,comment,image_user')
-      .eq('menu_id',m.id)
-      .order('created_at',{ascending:false})
+      .eq('menu_id', m.id)
+      .order('created_at',{ ascending:false })
       .limit(8);
     const list = document.querySelector('.comment-list');
-    list.innerHTML = more.map(c=>`
-      <div class="comment-item">
-        <img src="${c.image_user||'default-avatar.png'}" class="user-icon"/>
-        <div class="text">
-          <div class="meta">${c.nickname||'匿名'} (${c.age_group||'-'},${c.gender||'-'})</div>
-          <div class="body">${c.comment}</div>
-        </div>
-      </div>
-    `).join('') || '<p class="no-comment">コメントがありません。</p>';
-    document.getElementById('load-more').style.display='none';
+    more.forEach(c => {
+      const imageUrl = c.image_user
+        ? `https://labmhtrafdslfwqmzgky.supabase.co/storage/v1/object/public/user-images/${c.image_user}`
+        : 'default-avatar.png';
+      list.insertAdjacentHTML('beforeend', `
+        <div class="comment-item">
+          <a href="${imageUrl}" target="_blank">
+            <img src="${imageUrl}" class="user-icon"/>
+          </a>
+          <div class="text">
+            <div class="meta">${c.nickname||'匿名'} (${c.age_group||'-'},${c.gender||'-'})</div>
+            <div class="body">${c.comment}</div>
+          </div>
+        </div>`);
+    });
+    document.getElementById('load-more').style.display = 'none';
   };
 });
