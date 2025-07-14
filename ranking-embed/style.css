@@ -1,5 +1,4 @@
-/* リセット */
-html, body { margin:0; padding:0; }
+html, body { margin: 0; padding: 0; }
 
 /* リスト全体 */
 .ranking-list {
@@ -11,58 +10,60 @@ html, body { margin:0; padding:0; }
 /* 各アイテム */
 .rank-item {
   color: #fff;
-  text-align: center;
-  margin-bottom: 24px;
   font-family: sans-serif;
+  margin-bottom: 32px;
 }
 
-/* 順位バッジ */
+/* 順位バッジ：王冠型背景 */
 .rank-badge {
   display: inline-block;
-  background: #fff;
-  color: #000;
-  padding: 2px 6px;
-  border-radius: 6px;
+  position: relative;
+  width: 60px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
   font-weight: bold;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
+  color: #fff;
+  background: url('crown.svg') no-repeat center center;
+  background-size: contain;
+  margin-bottom: 12px;
 }
 
-/* 金・銀・銅色 */
-.rank1 .rank-badge { background: #FFD700; }
-.rank2 .rank-badge { background: #C0C0C0; }
-.rank3 .rank-badge { background: #CD7F32; }
+/* 上部レイアウト：画像とテキストを左右に配置 */
+.top-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
 
-/* 画像 */
+/* 写真：80px 四方の丸 */
 .menu-img {
-  display: block;
-  margin: 0 auto 8px;
-  width: 100px;
+  width: 80px;
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-/* 人気度 */
+/* テキストブロック（右上） */
+.text-block {
+  flex: 1;
+  text-align: right;
+}
 .popularity {
   font-size: 0.9rem;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
-
-/* 名前 + 下に白点線 */
 .name {
-  font-weight: 600;
   font-size: 1rem;
+  font-weight: 600;
   padding-bottom: 4px;
   border-bottom: 1px dotted #fff;
-  margin: 0 auto 6px;
-  max-width: 80%;
+  margin-bottom: 8px;
 }
 
-/* 説明 */
+/* 説明文 */
 .desc {
   font-size: 0.9rem;
-  margin: 6px auto 0;
-  max-width: 80%;
-  line-height: 1.2;
+  line-height: 1.3;
+  margin-top: 8px;
 }
