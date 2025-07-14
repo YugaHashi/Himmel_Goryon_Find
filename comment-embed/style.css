@@ -1,7 +1,9 @@
-html, body {
-  margin: 0; padding: 0;
+/* 基本リセット & コンテナ設定 */
+body {
+  margin: 0;
+  padding: 4px;
+  font-family: 'Rounded Mplus 1c', sans-serif;
   background: transparent;
-  font-family: sans-serif;
   color: #fff;
 }
 .container {
@@ -9,31 +11,70 @@ html, body {
   margin: auto;
   padding: 16px;
 }
+
+/* ごりょんさんLv UI */
 #level-ui {
-  display: flex; flex-direction: column; align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 16px;
 }
-.level-text { margin-bottom:8px; }
+.level-text { margin-bottom: 8px; }
 progress {
-  width:100%; height:14px; border-radius:7px; appearance:none;
+  width: 100%;
+  height: 14px;
+  border-radius: 7px;
+  appearance: none;
 }
-progress::-webkit-progress-bar { background:#eee; border-radius:7px; }
-progress::-webkit-progress-value { background:#9BB8AC; border-radius:7px; }
-#level-label { margin-top:8px; }
+progress::-webkit-progress-bar {
+  background: #eee;
+  border-radius: 7px;
+}
+progress::-webkit-progress-value {
+  background: #9BB8AC;
+  border-radius: 7px;
+}
+#level-label { margin-top: 8px; }
+
+/* ※修正部分：フォームのサイズ感と色 */
 form select,
 form input,
-form textarea,
-form button {
-  width:100%; margin-bottom:12px; padding:10px;
-  border:none; border-radius:6px; box-sizing:border-box;
+form textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: #fff;
+  color: #000;
 }
-form select,
-form input,
-form textarea { background:#fff; color:#000; }
+textarea {
+  min-height: 80px;
+}
+
+/* ※修正部分：共有ボタンの色とサイズ */
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #2563eb;
+}
+
+/* row レイアウトはそのまま */
 form .row {
-  display:flex; gap:8px;
+  display: flex;
+  gap: 8px;
 }
-form .row select { flex:1; }
-form button {
-  background:#339aff; color:#fff; cursor:pointer;
+form .row select {
+  flex: 1;
 }
