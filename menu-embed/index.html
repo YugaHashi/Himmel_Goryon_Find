@@ -2,25 +2,43 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>メニュー検索＆クチコミ</title><!-- 検索結果 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>月間人気ランキング</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="container">
-    <div class="search-bar">
-      <input id="search-input" list="menu-suggestions" placeholder="メニュー名を入力…" autocomplete="off"/>
-      <button id="search-btn">検索</button>
+  <div class="ranking-container">
+    <!-- 1位 -->
+    <div class="item rank1">
+      <div class="rank-label">第1位</div>
+      <div class="circle"><img src="" alt="1位"/></div>
+      <div class="count">0人</div>
+      <div class="info">
+        <div class="name"></div>
+        <div class="desc"></div>
+      </div>
     </div>
-    <datalist id="menu-suggestions"></datalist>
-
-    <div id="result" class="result">
-      <div class="placeholder"></div>
+    <!-- 2位 -->
+    <div class="item rank2">
+      <div class="rank-label">第2位</div>
+      <div class="circle"><img src="" alt="2位"/></div>
+      <div class="count">0人</div>
+      <div class="info">
+        <div class="name"></div>
+        <div class="desc"></div>
+      </div>
     </div>
-
-    <div id="reviews" class="reviews"></div>
+    <!-- 3位 -->
+    <div class="item rank3">
+      <div class="rank-label">第3位</div>
+      <div class="circle"><img src="" alt="3位"/></div>
+      <div class="count">0人</div>
+      <div class="info">
+        <div class="name"></div>
+        <div class="desc"></div>
+      </div>
+    </div>
   </div>
-
-  <script type="module" src="search.js"></script>
+  <script type="module" src="ranking.js"></script>
 </body>
 </html>
