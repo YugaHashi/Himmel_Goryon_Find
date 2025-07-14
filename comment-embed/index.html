@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>クチコミ投稿</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <div id="level-ui">
+      <div class="level-text">ごりょんさんLv</div>
+      <progress id="progress" max="3" value="0"></progress>
+      <span id="level-label">Lv 0</span>
+    </div>
+    <form id="comment-form">
+      <select id="form-menu">
+        <option value="">メニューを選択してください</option>
+      </select>
+      <input id="nickname" placeholder="ニックネーム（任意）を入力してください"/>
+      <input type="file" id="image_user" accept=".jpg,.jpeg,.png,.webp"/>
+      <textarea id="comment" rows="3" placeholder="クチコミを入力してください"></textarea>
+      <button type="submit">共有する</button>
+    </form>
+  </div>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
