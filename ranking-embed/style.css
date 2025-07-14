@@ -35,7 +35,7 @@ html, body {
 .top-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
   margin-bottom: 12px;
 }
 /* 左側：丸い写真 */
