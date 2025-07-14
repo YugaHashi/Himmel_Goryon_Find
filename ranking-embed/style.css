@@ -6,50 +6,63 @@ html, body {
   font-family: sans-serif;
 }
 
-/* リスト全体 *//* リスト全体 */
+/* リスト全体 */
 .ranking-list {
   list-style: none;
   margin: 0;
   padding: 16px;
 }
 
-/* 各アイテム */
+/* 各アイテム：中央揃え */
 .rank-item {
   margin-bottom: 24px;
+  text-align: center;
 }
 
-/* 順位バッジ：上部中央 */
+/* 順位バッジ：中央＋王冠背景 */
 .rank-badge {
-  display: block;
+  display: inline-block;
   width: 80px;
-  margin: 0 auto 12px;
-  line-height: 36px;
+  height: 40px;
+  line-height: 40px;
   text-align: center;
   font-weight: bold;
   color: #fff;
-  background: url('crown.svg') no-repeat center center;
+  margin-bottom: 12px;
   background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.rank1 .rank-badge {
+  background-image: url('crown-gold.svg');
+}
+.rank2 .rank-badge {
+  background-image: url('crown-silver.svg');
+}
+.rank3 .rank-badge {
+  background-image: url('crown-bronze.svg');
 }
 
 /* 写真＋テキスト 二分割レイアウト */
 .top-row {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 6px;
   margin-bottom: 12px;
 }
-/* 左側：丸い写真 */
-.left .menu-img {
+/* 左側：丸い写真 + 6px 右マージン */
+.menu-img {
   width: 80px;
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  margin: 0;
+  margin-right: 6px;
+  flex-shrink: 0;
 }
-/* 右側：人気度＋メニュー名 */
+/* 右側：中央揃えテキスト */
 .right {
   flex: 1;
-  text-align: right;
+  text-align: center;
 }
 .popularity {
   font-size: 0.9rem;
@@ -63,7 +76,7 @@ html, body {
 /* 横いっぱいの点線セパレータ */
 .separator {
   border-bottom: 1px dotted #fff;
-  margin-bottom: 12px;
+  margin: 0 0 12px;
 }
 
 /* 説明文 */
