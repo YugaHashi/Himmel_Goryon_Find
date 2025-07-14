@@ -1,0 +1,29 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: sans-serif;
+  color: #fff;
+}
+.container {
+  max-width: 285px;
+  margin: auto;
+  padding: 16px;
+}
+#ranking-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#ranking-list li {
+  margin-bottom: 12px;
+  text-align: center;
+}
+#ranking-list img {
+  width: 100%;
+  border-radius: 8px;
+}
+#ranking-list p {
+  margin-top: 8px;
+  font-size: 1rem;
+}
