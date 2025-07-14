@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>メニュー検索＆クチコミ</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <!-- 検索バー -->
+    <div class="search-bar">
+      <input id="search-input" list="menu-suggestions" placeholder="メニュー名を入力…" autocomplete="off"/>
+      <button id="search-btn">🔍</button>
+    </div>
+    <datalist id="menu-suggestions"></datalist>
+
+    <!-- 検索結果 -->
+    <div id="result" class="result"></div>
+
+    <!-- 最新3件クチコミ -->
+    <div id="reviews" class="reviews"></div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
