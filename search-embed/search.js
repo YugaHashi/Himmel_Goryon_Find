@@ -26,7 +26,7 @@ els.btn.addEventListener('click', async () => {
   const name = els.input.value.trim();
   if (!name) return;
 
-  els.result.innerHTML = '<div class="placeholder"></div>';
+  els.result.innerHTML = '';
   els.reviews.innerHTML = '';
 
   // 1) メニュー情報
