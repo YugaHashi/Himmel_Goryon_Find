@@ -6,11 +6,14 @@ html, body {
   font-family: sans-serif;
 }
 
-/* リスト全体 */
+/* 全体を高さ0.8倍に圧縮 */
 .ranking-list {
   list-style: none;
   margin: 0;
   padding: 16px;
+
+  transform: scaleY(0.8);
+  transform-origin: top center;
 }
 
 /* 各アイテム：中央揃え */
@@ -50,7 +53,7 @@ html, body {
   align-items: center;
   margin-bottom: 12px;
 }
-/* 左側：丸い写真 + 6px 右マージン */
+/* 左側：丸い写真 + 右マージン6px */
 .menu-img {
   width: 80px;
   height: 80px;
