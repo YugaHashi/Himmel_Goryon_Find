@@ -1,35 +1,66 @@
 html, body {
-  margin: 0; padding: 0;
-  background: transparent;
-  font-family: sans-serif;
-  color: #333;
-}
-.container {
-  max-width: 285px;
-  margin: auto;
-  padding: 16px;
-}
-#ranking-list {
-  list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  background: transparent;
 }
-.rank-item {
-  text-align: center;
-  margin-bottom: 16px;
-}
-.rank-item img {
+.ranking-container {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
   width: 100%;
-  max-width: 200px;
-  border-radius: 8px;
+  max-width: 320px;
+  height: 360px;
+  margin: auto;
+}
+.item {
+  position: absolute;
+  text-align: center;
+}
+.rank1 {
+  top: 0;
+  left: 0;
+}
+.rank2 {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+.rank3 {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.circle {
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.rank1 .circle {
+  width: 140px;
+  height: 140px;
+}
+.rank2 .circle {
+  width: 120px;
+  height: 120px;
+}
+.rank3 .circle {
+  width: 100px;
+  height: 100px;
+}
+.circle img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
-.rank-item .name {
-  margin-top: 8px;
+.rank-label {
   font-size: 1rem;
   font-weight: bold;
+  color: #d32f2f;
+  margin-bottom: 4px;
 }
-.rank-item .count {
+.count {
   font-size: 0.9rem;
-  color: #666;
+  color: #555;
+  margin-top: 4px;
 }
