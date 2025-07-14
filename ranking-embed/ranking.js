@@ -7,41 +7,49 @@ const supabase = createClient(
 
 async function loadRanking() {
   const firstDay = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-01T00:00:00Z`;
+
+  // 月間コメント数を集計
   const { data: comments = [] } = await supabase
-    .from('find_comments')
+    .from('find_comments_public')
     .select('menu_id')
     .gte('created_at', firstDay);
 
   const counts = comments.reduce((acc, { menu_id }) => {
-    acc[menu_id] = (acc[menu_id] || 0) + 1;
+    acc[menu_id] = (acc[menu_id]||0) + 1;
     return acc;
   }, {});
 
-  const top3 = Object.entries(counts)
-    .sort(([,a], [,b]) => b - a)
-    .slice(0, 3)
+  // 上位5つ
+  const top5 = Object.entries(counts)
+    .sort(([,a],[,b]) => b - a)
+    .slice(0,5)
     .map(([id]) => id);
 
-  if (!top3.length) {
+  if (!top5.length) {
     document.getElementById('ranking-list').innerHTML = '<li>データがありません</li>';
     return;
   }
 
+  // メニュー情報取得
   const { data: menus } = await supabase
     .from('find_menus')
     .select('id,name_jp,image_url')
-    .in('id', top3);
+    .in('id', top5);
 
   const lookup = Object.fromEntries(menus.map(m => [m.id, m]));
-  document.getElementById('ranking-list').innerHTML = top3.map(id => {
+
+  // 描画
+  document.getElementById('ranking-list').innerHTML = top5.map(id => {
     const m = lookup[id];
+    const cnt = counts[id] || 0;
     return `
-      <li>
+      <li class="rank-item">
         <img src="${m.image_url}" alt="${m.name_jp}"/>
-        <p>${m.name_jp}</p>
+        <p class="name">${m.name_jp}</p>
+        <p class="count">人気度: ${cnt}</p>
       </li>`;
   }).join('');
 }
 
 window.addEventListener('DOMContentLoaded', loadRanking);
-supabase.from('find_comments').on('INSERT', loadRanking).subscribe();
+supabase.from('find_comments_public').on('INSERT', loadRanking).subscribe();
