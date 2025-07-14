@@ -1,9 +1,8 @@
 html, body {
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
   background: transparent;
   font-family: sans-serif;
-  color: #fff;
+  color: #333;
 }
 .container {
   max-width: 285px;
@@ -15,15 +14,22 @@ html, body {
   padding: 0;
   margin: 0;
 }
-#ranking-list li {
-  margin-bottom: 12px;
+.rank-item {
   text-align: center;
+  margin-bottom: 16px;
 }
-#ranking-list img {
+.rank-item img {
   width: 100%;
+  max-width: 200px;
   border-radius: 8px;
+  object-fit: cover;
 }
-#ranking-list p {
+.rank-item .name {
   margin-top: 8px;
   font-size: 1rem;
+  font-weight: bold;
+}
+.rank-item .count {
+  font-size: 0.9rem;
+  color: #666;
 }
