@@ -6,18 +6,15 @@ const supabase = createClient(
 );
 
 const els = {
-  input: document.getElementById('search-input'),
-  btn:   document.getElementById('search-btn'),
-  list:  document.getElementById('menu-suggestions'),
+  input:   document.getElementById('search-input'),
+  btn:     document.getElementById('search-btn'),
+  list:    document.getElementById('menu-suggestions'),
   result:  document.getElementById('result'),
   reviews: document.getElementById('reviews'),
 };
 
 window.addEventListener('DOMContentLoaded', async () => {
-  // オートコンプリート用リスト取得
-  const { data: menus = [] } = await supabase
-    .from('find_menus')
-    .select('name_jp');
+  const { data: menus = [] } = await supabase.from('find_menus').select('name_jp');
   menus.forEach(m => {
     const opt = document.createElement('option');
     opt.value = m.name_jp;
@@ -29,50 +26,54 @@ els.btn.addEventListener('click', async () => {
   const name = els.input.value.trim();
   if (!name) return;
 
-  // クリア
-  els.result.innerHTML = '<p>読み込み中…</p>';
+  els.result.innerHTML = '<div class="placeholder"></div>';
   els.reviews.innerHTML = '';
 
-  // メニュー情報取得
+  // 1) メニュー情報
   const { data: m, error } = await supabase
     .from('find_menus')
-    .select('name_jp,image_url')
+    .select('id,name_jp,description_jp,image_url')
     .eq('name_jp', name)
     .single();
-
   if (error || !m) {
     els.result.innerHTML = '<p>該当メニューがありません。</p>';
     return;
   }
 
-  // メニュー表示
+  // 2) 人気度カウント (全期間)
+  const { count } = await supabase
+    .from('find_comments_public')
+    .select('*', { count: 'exact' })
+    .eq('menu_id', m.id);
+
+  // 3) 表示：写真＋名前＋人気度＋説明（句点で改行）
+  const descLines = m.description_jp.split('。').filter(s => s).map(s => s+'。').join('\n');
   els.result.innerHTML = `
     <img src="${m.image_url}" alt="${m.name_jp}"/>
     <p class="menu-name">${m.name_jp}</p>
+    <p class="popularity">人気度: ${count}</p>
+    <p class="description">${descLines}</p>
   `;
 
-  // 最新3件クチコミ取得
+  // 4) 最新3件クチコミ取得＆表示
   const { data: cs = [] } = await supabase
     .from('find_comments_public')
-    .select('nickname,comment,image_user')
+    .select('age,gender,nickname,comment')
     .eq('menu_id', m.id)
-    .order('created_at', { ascending: false })
+    .order('created_at',{ ascending: false })
     .limit(3);
 
-  // クチコミ表示
   if (cs.length) {
     els.reviews.innerHTML = '<h3>最新のクチコミ</h3>';
     cs.forEach(c => {
-      const thumb = c.image_user
-        ? `https://labmhtrafdslfwqmzgky.supabase.co/storage/v1/object/public/user-images/${c.image_user}`
-        : 'https://himmel-goryon-find.vercel.app/default-avatar.png';
       els.reviews.insertAdjacentHTML('beforeend', `
         <div class="review-item">
-          <img src="${thumb}" alt="user"/>
-          <div class="text">
-            <div class="nick">${c.nickname||'匿名'}</div>
-            <div class="body">${c.comment}</div>
+          <div class="meta">
+            <span>${c.age||'-'}</span>
+            <span>${c.gender||'-'}</span>
           </div>
+          <div class="nick">${c.nickname||'匿名'}</div>
+          <div class="body">${c.comment}</div>
         </div>
       `);
     });
