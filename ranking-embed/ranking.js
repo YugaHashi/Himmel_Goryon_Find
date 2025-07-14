@@ -6,53 +6,54 @@ const supabase = createClient(
 );
 
 async function loadRanking() {
-  const firstDay = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-01T00:00:00Z`;
-  // 1) 当月のコメント数を集計
-  const { data: pages = [] } = await supabase
+  const firstDay = `${new Date().getFullYear()}-${
+    String(new Date().getMonth()+1).padStart(2,'0')
+  }-01T00:00:00Z`;
+
+  // 当月コメント数を取得
+  const { data: comments = [] } = await supabase
     .from('find_comments_public')
     .select('menu_id')
     .gte('created_at', firstDay);
 
-  const counts = pages.reduce((acc, { menu_id }) => {
-    acc[menu_id] = (acc[menu_id]||0) + 1;
+  const counts = comments.reduce((acc, { menu_id }) => {
+    acc[menu_id] = (acc[menu_id] || 0) + 1;
     return acc;
   }, {});
 
-  // 2) 上位3を抽出
+  // 上位3つ
   const top3 = Object.entries(counts)
     .sort(([,a],[,b]) => b - a)
     .slice(0,3)
     .map(([id, cnt]) => ({ id: +id, cnt }));
 
-  if (top3.length === 0) return;
+  if (!top3.length) return;
 
-  // 3) メニュー名＋画像＋説明 を取得
+  // メニュー詳細取得
   const { data: menus = [] } = await supabase
     .from('find_menus')
     .select('id,name_jp,description_jp,image_url')
     .in('id', top3.map(x => x.id));
 
-  const menuMap = Object.fromEntries(
-    menus.map(m => [m.id, m])
-  );
+  const menuMap = Object.fromEntries(menus.map(m => [m.id, m]));
 
-  // 4) 各順位に反映
+  // 各順位に反映
   top3.forEach((item, idx) => {
     const rank = idx + 1;
-    const ctr = document.querySelector(`.rank${rank}`);
+    const li = document.querySelector(`.rank${rank}`);
     const menu = menuMap[item.id] || {};
 
-    // 画像＆カウント
-    ctr.querySelector('img').src = menu.image_url || '';
-    ctr.querySelector('.count').textContent = `${item.cnt}人`;
+    // 画像・人気度
+    li.querySelector('img').src = menu.image_url || '';
+    li.querySelector('.popularity').textContent = `★ 人気：${item.cnt}人`;
 
     // 名前
-    ctr.querySelector('.name').textContent = menu.name_jp || '';
+    li.querySelector('.name').textContent = menu.name_jp || '';
 
-    // 説明を「最初の句点(。)」まで
-    const fullDesc = menu.description_jp || '';
-    const firstSentence = fullDesc.split('。')[0] + '。';
-    ctr.querySelector('.desc').textContent = firstSentence;
+    // 説明は最初の「。」まで
+    const full = menu.description_jp || '';
+    const first = full.split('。')[0] + '。';
+    li.querySelector('.desc').textContent = first;
   });
 }
 
