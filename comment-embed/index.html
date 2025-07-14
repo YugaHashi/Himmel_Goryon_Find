@@ -2,37 +2,58 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>クチコミ投稿</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ランキング</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="container">
-    <div id="level-ui">
-      <div class="level-text">ごりょんさんLv</div>
-      <progress id="progress" max="3" value="0"></progress>
-      <span id="level-label">Lv 0</span>
-    </div>
-    <form id="comment-form">
-      <select id="form-menu">
-        <option value="">メニューを選択してください</option>
-      </select>
-      <div class="row">
-        <select id="age-group">
-          <option value="">年代（任意）</option>
-          <option>10代</option><option>20代</option><option>30代</option>
-          <option>40代</option><option>50代</option><option>60代以上</option>
-        </select>
-        <select id="gender">
-          <option value="">性別（任意）</option>
-          <option>男性</option><option>女性</option><option>その他</option>
-        </select>
+  <ul class="ranking-list">
+    <li class="rank-item rank1">
+      <!-- 順位：上部中央 -->
+      <span class="rank-badge">第1位</span>
+
+      <!-- 写真＋テキスト二分割 -->
+      <div class="top-row">
+        <div class="left"><img class="menu-img" src="" alt="1位メニュー"/></div>
+        <div class="right">
+          <div class="popularity">⭐ 人気：0人</div>
+          <div class="name"></div>
+        </div>
       </div>
-      <input id="nickname" placeholder="ニックネーム（任意）" />
-      <textarea id="comment" rows="3" placeholder="クチコミを入力してください"></textarea>
-      <button type="submit">共有する</button>
-    </form>
-  </div>
-  <script type="module" src="script.js"></script>
+
+      <!-- 点線セパレータ -->
+      <div class="separator"></div>
+
+      <!-- 説明文 -->
+      <div class="desc"></div>
+    </li>
+
+    <li class="rank-item rank2">
+      <span class="rank-badge">第2位</span>
+      <div class="top-row">
+        <div class="left"><img class="menu-img" src="" alt="2位メニュー"/></div>
+        <div class="right">
+          <div class="popularity">⭐ 人気：0人</div>
+          <div class="name"></div>
+        </div>
+      </div>
+      <div class="separator"></div>
+      <div class="desc"></div>
+    </li>
+
+    <li class="rank-item rank3">
+      <span class="rank-badge">第3位</span>
+      <div class="top-row">
+        <div class="left"><img class="menu-img" src="" alt="3位メニュー"/></div>
+        <div class="right">
+          <div class="popularity">⭐ 人気：0人</div>
+          <div class="name"></div>
+        </div>
+      </div>
+      <div class="separator"></div>
+      <div class="desc"></div>
+    </li>
+  </ul>
+  <script type="module" src="ranking.js"></script>
 </body>
-</html> <!-- 3位 -->
+</html>
