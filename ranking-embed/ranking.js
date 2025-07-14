@@ -6,49 +6,42 @@ const supabase = createClient(
 );
 
 async function loadRanking() {
+  // 当月1日以降のコメント数を集計
   const firstDay = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-01T00:00:00Z`;
-
-  // 月間コメント数を集計
   const { data: comments = [] } = await supabase
     .from('find_comments_public')
     .select('menu_id')
     .gte('created_at', firstDay);
 
   const counts = comments.reduce((acc, { menu_id }) => {
-    acc[menu_id] = (acc[menu_id]||0) + 1;
+    acc[menu_id] = (acc[menu_id] || 0) + 1;
     return acc;
   }, {});
 
-  // 上位5つ
-  const top5 = Object.entries(counts)
+  // 上位3を抽出
+  const top3 = Object.entries(counts)
     .sort(([,a],[,b]) => b - a)
-    .slice(0,5)
-    .map(([id]) => id);
+    .slice(0, 3)
+    .map(([id, cnt]) => ({ id: +id, cnt }));
 
-  if (!top5.length) {
-    document.getElementById('ranking-list').innerHTML = '<li>データがありません</li>';
-    return;
-  }
-
-  // メニュー情報取得
-  const { data: menus } = await supabase
+  // メニュー画像を取得
+  const { data: menus = [] } = await supabase
     .from('find_menus')
-    .select('id,name_jp,image_url')
-    .in('id', top5);
+    .select('id,image_url')
+    .in('id', top3.map(x => x.id));
 
-  const lookup = Object.fromEntries(menus.map(m => [m.id, m]));
+  const urlMap = Object.fromEntries(menus.map(m => [m.id, m.image_url]));
 
-  // 描画
-  document.getElementById('ranking-list').innerHTML = top5.map(id => {
-    const m = lookup[id];
-    const cnt = counts[id] || 0;
-    return `
-      <li class="rank-item">
-        <img src="${m.image_url}" alt="${m.name_jp}"/>
-        <p class="name">${m.name_jp}</p>
-        <p class="count">人気度: ${cnt}</p>
-      </li>`;
-  }).join('');
+  // DOM に反映
+  top3.forEach((item, idx) => {
+    const rank = idx + 1;
+    const container = document.querySelector(`.rank${rank}`);
+    const imgEl = container.querySelector('img');
+    const countEl = container.querySelector('.count');
+
+    imgEl.src = urlMap[item.id] || '';
+    countEl.textContent = `${item.cnt}人`;
+  });
 }
 
 window.addEventListener('DOMContentLoaded', loadRanking);
