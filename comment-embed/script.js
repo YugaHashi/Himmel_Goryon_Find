@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       `<option value="${m.id}">${m.name_jp}</option>`
     );
   });
-  updateUI();
+  updateUI();// 投稿
 });
 
 el.form.addEventListener('submit', async e => {
