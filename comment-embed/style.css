@@ -1,5 +1,4 @@
 /* style.css */
-/* style.css */
 /* リセット＋全体設定 */
 * {
   box-sizing: border-box;
@@ -37,12 +36,28 @@ progress::-webkit-progress-bar {
   border-radius: 7px;
 }
 progress::-webkit-progress-value {
-  background: #9BB8AC;
   border-radius: 7px;
 }
-#level-label {
-  display: block;
-  margin-top: 8px;
+progress[value="1"]::-webkit-progress-value {
+  background-color: #00C3CC;
+}
+progress[value="2"]::-webkit-progress-value {
+  background-color: #2291D8;
+}
+progress[value="3"]::-webkit-progress-value {
+  background-color: #395D72;
+}
+progress::-moz-progress-bar {
+  border-radius: 7px;
+}
+progress[value="1"]::-moz-progress-bar {
+  background-color: #00C3CC;
+}
+progress[value="2"]::-moz-progress-bar {
+  background-color: #2291D8;
+}
+progress[value="3"]::-moz-progress-bar {
+  background-color: #395D72;
 }
 
 /* フォーム要素共通 */
@@ -56,7 +71,11 @@ form textarea {
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #fff;
-  color: #3b82f6;
+  color: #3b82f6; /* 入力文字は青 */
+}
+/* ドロップダウンの選択肢は黒 */
+form option {
+  color: #000;
 }
 
 /* 無効化時のスタイル */
