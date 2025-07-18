@@ -64,7 +64,7 @@ html, body {
   flex-shrink: 0;
 
   /* 要素だけ1cm右に平行移動 */
-  transform: translateX(0.7cm);
+  transform: translateX(0.6cm);
 }
 
 /* 右側：中央揃えテキスト */
