@@ -71,7 +71,7 @@ form textarea {
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #fff;
-  color: #3b82f6; /* 入力文字は青 */
+  color: #000; /* 入力文字は青 */
 }
 /* ドロップダウンの選択肢は黒 */
 form option {
