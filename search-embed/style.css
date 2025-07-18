@@ -29,6 +29,7 @@ html, body {
   flex: 1;
   background: #fff;
   color: #000;
+  font-weight: bold;
 }
 .search-bar button {
   background: #339aff;
