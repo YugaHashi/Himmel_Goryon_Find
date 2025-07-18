@@ -8,15 +8,19 @@
 </head>
 <body>
   <div class="container">
+    <!-- ごりょんさんLv表示 -->
     <div id="level-ui">
       <div class="level-text">ごりょんさんLv</div>
       <progress id="progress" max="3" value="0"></progress>
       <span id="level-label">Lv 0</span>
     </div>
+
+    <!-- クチコミフォーム -->
     <form id="comment-form">
-      <select id="form-menu">
+      <select id="form-menu" required>
         <option value="">メニューを選択してください</option>
       </select>
+
       <div class="row">
         <select id="age-group">
           <option value="">年代（任意）</option>
@@ -28,11 +32,15 @@
           <option>男性</option><option>女性</option><option>その他</option>
         </select>
       </div>
+
       <input id="nickname" placeholder="ニックネーム（任意）" />
-      <textarea id="comment" rows="3" placeholder="クチコミを入力してください"></textarea>
-      <button type="submit">共有する</button>
+
+      <textarea id="comment" rows="3" placeholder="クチコミを入力してください" required></textarea>
+
+      <button id="submit-btn" type="submit">共有する</button>
     </form>
   </div>
+
   <script type="module" src="script.js"></script>
 </body>
 </html>
