@@ -1,4 +1,3 @@
-// script.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const supabase = createClient(
@@ -108,12 +107,11 @@ els.form.addEventListener('submit', async e => {
   const { error } = await supabase
     .from('find_comments')
     .insert([{
-      menu_id:    menuId,
-      nickname:   els.nick.value   || null,
-      age:        els.age.value    || null,
-      gender:     els.gender.value || null,
-      comment,
-      image_user: null
+      menu_id:  menuId,
+      nickname: els.nick.value   || undefined,
+      age:      els.age.value    || undefined,
+      gender:   els.gender.value || undefined,
+      comment:  comment
     }]);
   if (error) {
     console.error(error);
@@ -131,7 +129,7 @@ els.form.addEventListener('submit', async e => {
 
   updateUI();
 
-  // ボタン文言を「ありがとうございます」にして 4秒後に戻す
+  // ボタン文言を「ありがとうございます」にして 3秒後に戻す
   const orig = els.submit.textContent;
   els.submit.textContent = 'ありがとうございます';
   els.submit.disabled    = true;
