@@ -108,9 +108,9 @@ els.form.addEventListener('submit', async e => {
     .from('find_comments')
     .insert([{
       menu_id:  menuId,
-      nickname: els.nick.value   || undefined,
-      age:      els.age.value    || undefined,
-      gender:   els.gender.value || undefined,
+      nickname: els.nick.value   || null,
+      age:      els.age.value    || null,
+      gender:   els.gender.value || null,
       comment:  comment
     }]);
   if (error) {
