@@ -1,4 +1,4 @@
-html, body {
+html, body { 
   margin: 0;
   padding: 0;
   background: transparent;
@@ -62,6 +62,9 @@ html, body {
   object-fit: cover;
   margin-right: 5px;
   flex-shrink: 0;
+
+  /* 要素だけ1cm右に平行移動 */
+  transform: translateX(1cm);
 }
 
 /* 右側：中央揃えテキスト */
