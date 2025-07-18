@@ -1,4 +1,6 @@
-html, body { 
+/* style.css */
+
+html, body {  
   margin: 0;
   padding: 0;
   background: transparent;
@@ -10,40 +12,28 @@ html, body {
 .ranking-list {
   list-style: none;
   margin: 0;
-  /* padding: 16px; → 16px×0.8 ≈13px */
   padding: 13px;
 }
 
 /* 各アイテム：中央揃え */
 .rank-item {
-  /* margin-bottom: 24px; → 24px×0.8 ≈19px */
   margin-bottom: 19px;
   text-align: center;
 }
 
-/* 順位バッジ：上部中央 */
+/* 順位バッジ */
 .rank-badge {
-  display: inline-block;
-  width: 80px;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
   font-weight: bold;
+  font-size: 1.2rem;
   color: #fff;
-  /* margin-bottom: 12px; → 12px×0.8 ≈10px */
   margin-bottom: 10px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center center;
 }
-.rank1 .rank-badge {
-  background-image: url('crown-gold.svg');
-}
-.rank2 .rank-badge {
-  background-image: url('crown-silver.svg');
-}
-.rank3 .rank-badge {
-  background-image: url('crown-bronze.svg');
+.badge-icon {
+  width: 24px;
+  height: auto;
+  margin-left: 6px;
 }
 
 /* 写真＋テキスト 二分割レイアウト */
@@ -51,10 +41,8 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* gap 削除し、margin で制御 */
-  margin-bottom: 10px; /* 12px×0.8 ≈10px */
+  margin-bottom: 10px;
 }
-/* 左側：丸い写真 + 5px 右マージン（6px÷1.2 ≈5px） */
 .menu-img {
   width: 80px;
   height: 80px;
@@ -62,30 +50,33 @@ html, body {
   object-fit: cover;
   margin-right: 5px;
   flex-shrink: 0;
-
-  /* 要素だけ1cm右に平行移動 */
   transform: translateX(1cm);
 }
 
-/* 右側：中央揃えテキスト */
+/* 右側テキスト */
 .right {
   flex: 1;
   text-align: center;
 }
 .popularity {
+  display: inline-flex;
+  align-items: center;
   font-size: 0.9rem;
-  /* margin-bottom: 4px; → 4px×0.8 ≈3px */
   margin-bottom: 3px;
+}
+.star-icon {
+  width: 16px;
+  height: auto;
+  margin-right: 4px;
 }
 .name {
   font-size: 1rem;
   font-weight: 600;
 }
 
-/* 横いっぱいの点線セパレータ */
+/* 点線セパレータ */
 .separator {
   border-bottom: 1px dotted #fff;
-  /* margin-bottom: 12px; → 12px×0.8 ≈10px */
   margin-bottom: 10px;
 }
 
