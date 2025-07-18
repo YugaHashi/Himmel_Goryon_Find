@@ -29,25 +29,30 @@ els.btn.addEventListener('click', async () => {
   els.result.innerHTML = '';
   els.reviews.innerHTML = '';
 
-  // 1) メニュー情報
+  // 1) メニュー情報取得
   const { data: m, error } = await supabase
     .from('find_menus')
     .select('id,name_jp,description_jp,image_url')
     .eq('name_jp', name)
     .single();
   if (error || !m) {
-    els.result.innerHTML = '<p>該当メニューがありません。</p>';
+    els.result.innerHTML = '<p class="not-found">該当メニューがありません。</p>';
     return;
   }
 
-  // 2) 人気度カウント (全期間)
+  // 2) 人気度カウント
   const { count } = await supabase
     .from('find_comments_public')
     .select('*', { count: 'exact' })
     .eq('menu_id', m.id);
 
-  // 3) 表示：写真＋名前＋人気度＋説明（句点で改行）
-  const descLines = m.description_jp.split('。').filter(s => s).map(s => s+'。').join('\n');
+  // 3) 結果表示
+  const descLines = m.description_jp
+    .split('。')
+    .filter(s => s)
+    .map(s => s + '。')
+    .join('\n');
+
   els.result.innerHTML = `
     <img src="${m.image_url}" alt="${m.name_jp}"/>
     <p class="menu-name">${m.name_jp}</p>
@@ -55,7 +60,7 @@ els.btn.addEventListener('click', async () => {
     <p class="description">${descLines}</p>
   `;
 
-  // 4) 最新3件クチコミ取得＆表示
+  // 4) 最新3件クチコミ取得
   const { data: cs = [] } = await supabase
     .from('find_comments_public')
     .select('age,gender,nickname,comment')
@@ -68,16 +73,15 @@ els.btn.addEventListener('click', async () => {
     cs.forEach(c => {
       els.reviews.insertAdjacentHTML('beforeend', `
         <div class="review-item">
-          <div class="meta">
-            <span>${c.age||'-'}</span>
-            <span>${c.gender||'-'}</span>
+          <div class="review-header">
+            <span class="nick">${c.nickname || '匿名'}</span>
+            <span class="meta">${c.age || '-'} / ${c.gender || '-'}</span>
           </div>
-          <div class="nick">${c.nickname||'匿名'}</div>
-          <div class="body">${c.comment}</div>
+          <p class="body">${c.comment}</p>
         </div>
       `);
     });
   } else {
-    els.reviews.innerHTML = '<p>まだクチコミがありません。</p>';
+    els.reviews.innerHTML = '<p class="no-reviews">まだクチコミがありません。</p>';
   }
 });
