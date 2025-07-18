@@ -35,6 +35,7 @@ html, body {
   background: #339aff;
   color: #fff;
   cursor: pointer;
+  font-weight: bold;
 }
 
 /* --- 検索結果 --- */
