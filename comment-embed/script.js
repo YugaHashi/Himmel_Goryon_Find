@@ -44,12 +44,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.error('メニュー取得エラー:', menuErr);
     return alert('メニュー読み込みに失敗しました。');
   }
-  menus.forEach(m => {
-    els.menu.insertAdjacentHTML(
-      'beforeend',
-      `<option value="${m.id}">${m.name_jp}</option>`
-    );
-  });
 
   // 過去に入力した optional 情報があればロック
   const infos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
