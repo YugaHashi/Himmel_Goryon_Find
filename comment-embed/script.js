@@ -5,7 +5,7 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhYm1odHJhZmRzbGZ3cW16Z2t5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2OTAzNzksImV4cCI6MjA2NTI2NjM3OX0.CviQ3lzngfvqDFwEtDw5cTRSEICWliunXngYCokhbNs'
 );
 
-const MAX_PER_DAY = 3;
+const MAX_PER_DAY    = 3;
 const STORAGE_KEY    = 'posts_by_date';
 const USERINFO_KEY   = 'user_info_by_date';
 
@@ -21,9 +21,7 @@ const els = {
   level:   document.getElementById('level-label')
 };
 
-// 今日の日付 (YYYY-MM-DD)
 const getToday = () => new Date().toISOString().slice(0,10);
-// URL の ?date=YYYY-MM-DD があれば返す（正規表現チェック）
 const getPageDate = () => {
   const p = new URLSearchParams(window.location.search).get('date');
   return /^\d{4}-\d{2}-\d{2}$/.test(p) ? p : null;
@@ -38,10 +36,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // メニューを取得してプルダウンに追加
-  const { data: menus = [] } = await supabase
+  // プルダウンにメニューをセット
+  const { data: menus = [], error: menuErr } = await supabase
     .from('find_menus')
     .select('id,name_jp');
+  if (menuErr) {
+    console.error('メニュー取得エラー:', menuErr);
+    return alert('メニューの読み込みに失敗しました。');
+  }
   menus.forEach(m => {
     els.menu.insertAdjacentHTML(
       'beforeend',
@@ -49,9 +51,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     );
   });
 
-  // 初回 or 過去に保存された optional 情報 (age/gender/nick) があれば固定
-  const infos   = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
-  const saved   = infos[today];
+  // 過去に入力した optional 情報があればロック
+  const infos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
+  const saved = infos[today];
   if (saved) {
     els.age.value    = saved.age    || '';
     els.gender.value = saved.gender || '';
@@ -72,15 +74,19 @@ els.form.addEventListener('submit', async e => {
     return alert('このページは本日用のコンテンツではありません。');
   }
 
-  // 必須項目チェック
   const menuId  = +els.menu.value;
   const comment = els.txt.value.trim();
-  if (!menuId || !comment) {
-    return alert('必須項目を入力してください。');
+
+  // 未選択 or 空文字を個別にチェック
+  if (!menuId) {
+    return alert('メニューを選択してください。');
+  }
+  if (!comment) {
+    return alert('コメントを入力してください。');
   }
 
-  // localStorage から本日の投稿履歴取得
-  const allPosts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  // 日次の投稿上限チェック
+  const allPosts  = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   const todayList = allPosts[today] || [];
   if (todayList.includes(menuId)) {
     return alert('本日の同じメニューへのクチコミはすでに行われています。');
@@ -89,7 +95,7 @@ els.form.addEventListener('submit', async e => {
     return alert(`本日の上限(${MAX_PER_DAY}件)に達しました。`);
   }
 
-  // 初回のみ、optional 情報を保存してフォームを固定
+  // optional 情報を初回のみ保存
   const allInfos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
   if (!allInfos[today]) {
     allInfos[today] = {
@@ -103,7 +109,7 @@ els.form.addEventListener('submit', async e => {
     els.nick.disabled   = true;
   }
 
-  // Supabase にコメントを挿入（age/gender も含む）
+  // コメントをSupabaseに挿入
   const { error } = await supabase
     .from('find_comments')
     .insert([{
@@ -111,25 +117,25 @@ els.form.addEventListener('submit', async e => {
       nickname: els.nick.value   || null,
       age:      els.age.value    || null,
       gender:   els.gender.value || null,
-      comment:  comment
+      comment
     }]);
+
   if (error) {
-    console.error(error);
-    return alert('サーバーへの保存に失敗しました。');
+    console.error('Supabaseエラー:', error);
+    return alert(`サーバーへの保存に失敗しました：${error.message}`);
   }
 
-  // localStorage に投稿履歴を追加
+  // localStorageに投稿履歴を追加
   todayList.push(menuId);
   allPosts[today] = todayList;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(allPosts));
 
-  // フォームをクリア
+  // フォームをクリア＆UI更新
   els.menu.value = '';
   els.txt.value  = '';
-
   updateUI();
 
-  // ボタン文言を「ありがとうございます」にして 3秒後に戻す
+  // ボタンフィードバック
   const orig = els.submit.textContent;
   els.submit.textContent = 'ありがとうございます';
   els.submit.disabled    = true;
