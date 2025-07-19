@@ -112,13 +112,18 @@ els.form.addEventListener('submit', async e => {
   // コメントをSupabaseに挿入
   const { error } = await supabase
     .from('find_comments')
-    .insert([{
-      menu_id:  menuId,
-      nickname: els.nick.value   || null,
-      age:      els.age.value    || null,
-      gender:   els.gender.value || null,
-      comment
-    }]);
+  // 挿入データを明示的に作ってログ出力
+  const payload = {
+    menu_id:  menuId,
+    nickname: els.nick.value   || null,
+    age:      els.age.value    || null,
+    gender:   els.gender.value || null,
+    comment
+  };
+  console.log('→ Supabaseに投げるデータ:', payload);
+　const { error } = await supabase
+    .from('find_comments')
+    .insert([ payload ]);
 
   if (error) {
     console.error('Supabaseエラー:', error);
