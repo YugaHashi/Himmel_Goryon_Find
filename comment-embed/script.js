@@ -5,9 +5,9 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhYm1odHJhZmRzbGZ3cW16Z2t5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2OTAzNzksImV4cCI6MjA2NTI2NjM3OX0.CviQ3lzngfvqDFwEtDw5cTRSEICWliunXngYCokhbNs'
 );
 
-const MAX_PER_DAY    = 3;
-const STORAGE_KEY    = 'posts_by_date';
-const USERINFO_KEY   = 'user_info_by_date';
+const MAX_PER_DAY  = 3;
+const STORAGE_KEY  = 'posts_by_date';
+const USERINFO_KEY = 'user_info_by_date';
 
 const els = {
   form:    document.getElementById('comment-form'),
@@ -21,7 +21,7 @@ const els = {
   level:   document.getElementById('level-label')
 };
 
-const getToday = () => new Date().toISOString().slice(0,10);
+const getToday    = () => new Date().toISOString().slice(0,10);
 const getPageDate = () => {
   const p = new URLSearchParams(window.location.search).get('date');
   return /^\d{4}-\d{2}-\d{2}$/.test(p) ? p : null;
@@ -31,18 +31,18 @@ window.addEventListener('DOMContentLoaded', async () => {
   const today    = getToday();
   const pageDate = getPageDate();
   if (pageDate && pageDate !== today) {
-    alert('このページは本日用のコンテンツではありません。');
+    alert('このページは本日用ではありません。');
     els.submit.disabled = true;
     return;
   }
 
-  // プルダウンにメニューをセット
-  const { data: menus = [], error: menuErr } = await supabase
+  // メニュー取得
+  const { data: menus, error: menuErr } = await supabase
     .from('find_menus')
     .select('id,name_jp');
   if (menuErr) {
     console.error('メニュー取得エラー:', menuErr);
-    return alert('メニューの読み込みに失敗しました。');
+    return alert('メニュー読み込み失敗');
   }
   menus.forEach(m => {
     els.menu.insertAdjacentHTML(
@@ -51,15 +51,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     );
   });
 
-  // 過去に入力した optional 情報があればロック
+  // 過去情報ロック
   const infos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
   const saved = infos[today];
   if (saved) {
     els.age.value    = saved.age    || '';
     els.gender.value = saved.gender || '';
     els.nick.value   = saved.nick   || '';
-    els.age.disabled    = true;
-    els.gender.disabled = true;
+    els.age.disabled    =
+    els.gender.disabled =
     els.nick.disabled   = true;
   }
 
@@ -71,31 +71,20 @@ els.form.addEventListener('submit', async e => {
   const today    = getToday();
   const pageDate = getPageDate();
   if (pageDate && pageDate !== today) {
-    return alert('このページは本日用のコンテンツではありません。');
+    return alert('このページは本日用ではありません。');
   }
 
   const menuId  = +els.menu.value;
   const comment = els.txt.value.trim();
+  if (!menuId)  return alert('メニューを選んでください');
+  if (!comment) return alert('コメントを入力してください');
 
-  // 未選択 or 空文字を個別にチェック
-  if (!menuId) {
-    return alert('メニューを選択してください。');
-  }
-  if (!comment) {
-    return alert('コメントを入力してください。');
-  }
-
-  // 日次の投稿上限チェック
   const allPosts  = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   const todayList = allPosts[today] || [];
-  if (todayList.includes(menuId)) {
-    return alert('本日の同じメニューへのクチコミはすでに行われています。');
-  }
-  if (todayList.length >= MAX_PER_DAY) {
-    return alert(`本日の上限(${MAX_PER_DAY}件)に達しました。`);
-  }
+  if (todayList.includes(menuId))           return alert('既に同じメニューに投稿済み');
+  if (todayList.length >= MAX_PER_DAY)      return alert(`本日の上限(${MAX_PER_DAY})に到達`);
 
-  // optional 情報を初回のみ保存
+  // optional 情報を初回保存
   const allInfos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
   if (!allInfos[today]) {
     allInfos[today] = {
@@ -104,15 +93,12 @@ els.form.addEventListener('submit', async e => {
       nick:   els.nick.value   || null
     };
     localStorage.setItem(USERINFO_KEY, JSON.stringify(allInfos));
-    els.age.disabled    = true;
-    els.gender.disabled = true;
+    els.age.disabled    =
+    els.gender.disabled =
     els.nick.disabled   = true;
   }
 
-  // コメントをSupabaseに挿入
-  const { error } = await supabase
-    .from('find_comments')
-  // 挿入データを明示的に作ってログ出力
+  // 🚀 payload をログで確認
   const payload = {
     menu_id:  menuId,
     nickname: els.nick.value   || null,
@@ -120,22 +106,25 @@ els.form.addEventListener('submit', async e => {
     gender:   els.gender.value || null,
     comment
   };
-  console.log('→ Supabaseに投げるデータ:', payload);
-　const { error } = await supabase
+  console.log('▶️ 投稿データ:', payload);
+
+  // 📦 insert + select を必ず付ける
+  const { data, error } = await supabase
     .from('find_comments')
-    .insert([ payload ]);
+    .insert([ payload ])
+    .select();  // ← これがミソ！
 
   if (error) {
     console.error('Supabaseエラー:', error);
-    return alert(`サーバーへの保存に失敗しました：${error.message}`);
+    return alert(`投稿失敗：${error.message}`);
   }
 
-  // localStorageに投稿履歴を追加
+  // localStorage へ
   todayList.push(menuId);
   allPosts[today] = todayList;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(allPosts));
 
-  // フォームをクリア＆UI更新
+  // フォームクリア＆UI更新
   els.menu.value = '';
   els.txt.value  = '';
   updateUI();
@@ -152,9 +141,7 @@ els.form.addEventListener('submit', async e => {
 
 function updateUI() {
   const today = getToday();
-  const count = (JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')[today] || []).length;
-  els.prog.value = count;
-  els.level.textContent = count >= MAX_PER_DAY
-    ? 'Lv MAX'
-    : `Lv ${count}`;
+  const cnt   = (JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')[today] || []).length;
+  els.prog.value      = cnt;
+  els.level.textContent = cnt >= MAX_PER_DAY ? 'Lv MAX' : `Lv ${cnt}`;
 }
