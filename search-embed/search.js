@@ -56,7 +56,7 @@ els.btn.addEventListener('click', async () => {
   els.result.innerHTML = `
     <img src="${m.image_url}" alt="${m.name_jp}"/>
     <p class="menu-name">${m.name_jp}</p>
-    <p class="popularity">人気度: ${count}</p>
+    <p class="popularity">クチコミ数: ${count}</p>
     <p class="description">${descLines}</p>
   `;
 
