@@ -1,4 +1,4 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'; 
 
 const supabase = createClient(
   'https://labmhtrafdslfwqmzgky.supabase.co',
@@ -44,6 +44,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.error('メニュー取得エラー:', menuErr);
     return alert('メニュー読み込みに失敗しました。');
   }
+  menus.forEach(m => {
+    els.menu.insertAdjacentHTML(
+      'beforeend',
+      <option value="${m.id}">${m.name_jp}</option>
+    );
+  });
 
   // 過去に入力した optional 情報があればロック
   const infos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
@@ -79,7 +85,7 @@ els.form.addEventListener('submit', async e => {
   const allPosts  = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   const todayList = allPosts[today] || [];
   if (todayList.includes(menuId))      return alert('本日の同じメニューに投稿済みです。');
-  if (todayList.length >= MAX_PER_DAY) return alert(`本日の上限(${MAX_PER_DAY}件)に達しました。`);
+  if (todayList.length >= MAX_PER_DAY) return alert(本日の上限(${MAX_PER_DAY}件)に達しました。);
 
   // 初回のみ optional 情報を保存
   const allInfos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
@@ -111,7 +117,7 @@ els.form.addEventListener('submit', async e => {
 
   if (error) {
     console.error('Supabaseエラー:', error);
-    return alert(`投稿失敗：${error.message}`);
+    return alert(投稿失敗：${error.message});
   }
 
   // localStorage に履歴を追加
@@ -138,5 +144,5 @@ function updateUI() {
   const today = getToday();
   const cnt   = (JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')[today] || []).length;
   els.prog.value      = cnt;
-  els.level.textContent = cnt >= MAX_PER_DAY ? 'Lv MAX' : `Lv ${cnt}`;
-}
+  els.level.textContent = cnt >= MAX_PER_DAY ? 'Lv MAX' : Lv ${cnt};
+}　　　　
