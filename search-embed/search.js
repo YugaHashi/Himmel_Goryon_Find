@@ -5,143 +5,78 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhYm1odHJhZmRzbGZ3cW16Z2t5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2OTAzNzksImV4cCI6MjA2NTI2NjM3OX0.CviQ3lzngfvqDFwEtDw5cTRSEICWliunXngYCokhbNs'
 );
 
-const MAX_PER_DAY  = 3;
-const STORAGE_KEY  = 'posts_by_date';
-const USERINFO_KEY = 'user_info_by_date';
+const input       = document.getElementById('search-input');
+const btn         = document.getElementById('search-btn');
+const resultEl    = document.getElementById('result');
+const reviewsEl   = document.getElementById('reviews');
+const suggestions = document.getElementById('menu-suggestions');
 
-const els = {
-  form:    document.getElementById('comment-form'),
-  menu:    document.getElementById('form-menu'),
-  age:     document.getElementById('age-group'),
-  gender:  document.getElementById('gender'),
-  nick:    document.getElementById('nickname'),
-  txt:     document.getElementById('comment'),
-  submit:  document.getElementById('submit-btn'),
-  prog:    document.getElementById('progress'),
-  level:   document.getElementById('level-label')
-};
+let menus = [];
 
-const getToday = () => new Date().toISOString().slice(0,10);
-const getPageDate = () => {
-  const p = new URLSearchParams(window.location.search).get('date');
-  return /^\d{4}-\d{2}-\d{2}$/.test(p) ? p : null;
-};
+// 1) メニュー一覧をロードして datalist にセット
+async function loadMenus() {
+  const { data, error } = await supabase
+    .from('find_menus')
+    .select('id, name_jp, description_jp, image_url');
+  if (error) {
+    console.error(error);
+    return alert('メニュー読み込みに失敗しました。');
+  }
+  menus = data;
+  data.forEach(m => {
+    suggestions.insertAdjacentHTML('beforeend', `<option value="${m.name_jp}">`);
+  });
+}
+loadMenus();
 
-window.addEventListener('DOMContentLoaded', async () => {
-  const today    = getToday();
-  const pageDate = getPageDate();
-  if (pageDate && pageDate !== today) {
-    alert('このページは本日用のコンテンツではありません。');
-    els.submit.disabled = true;
+// 2) 検索ボタン押下時の処理
+btn.addEventListener('click', async () => {
+  const keyword = input.value.trim();
+  if (!keyword) return;
+
+  // 名前一致するメニューを探す
+  const menu = menus.find(m => m.name_jp === keyword);
+  if (!menu) {
+    resultEl.innerHTML  = `<p class="not-found">メニューが見つかりませんでした。</p>`;
+    reviewsEl.innerHTML = '';
     return;
   }
 
-  // プルダウンにメニューをセット
-  const { data: menus, error: menuErr } = await supabase
-    .from('find_menus')
-    .select('id,name_jp');
-  if (menuErr) {
-    console.error('メニュー取得エラー:', menuErr);
-    return alert('メニュー読み込みに失敗しました。');
-  }
-  menus.forEach(m => {
-    els.menu.insertAdjacentHTML(
-      'beforeend',
-      `<option value="${m.id}">${m.name_jp}</option>`
-    );
-  });
-
-  // 過去に入力した optional 情報があればロック
-  const infos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
-  const saved = infos[today];
-  if (saved) {
-    els.age.value      = saved.age    || '';
-    els.gender.value   = saved.gender || '';
-    els.nick.value     = saved.nick   || '';
-    els.age.disabled   =
-    els.gender.disabled=
-    els.nick.disabled  = true;
-  }
-
-  updateUI();
-});
-
-els.form.addEventListener('submit', async e => {
-  e.preventDefault();
-  const today    = getToday();
-  const pageDate = getPageDate();
-  if (pageDate && pageDate !== today) {
-    return alert('このページは本日用のコンテンツではありません。');
-  }
-
-  // 入力値取得・バリデーション
-  const menuId  = +els.menu.value;
-  const comment = els.txt.value.trim();
-  if (!menuId)      return alert('メニューを選択してください。');
-  if (!comment)     return alert('コメントを入力してください。');
-
-  // 本日の投稿履歴チェック
-  const allPosts  = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  const todayList = allPosts[today] || [];
-  if (todayList.includes(menuId))           return alert('本日の同じメニューへの投稿済みです。');
-  if (todayList.length >= MAX_PER_DAY)      return alert(`本日の上限(${MAX_PER_DAY}件)に達しました。`);
-
-  // optional 情報を初回のみ保存
-  const allInfos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
-  if (!allInfos[today]) {
-    allInfos[today] = {
-      age:    els.age.value    || null,
-      gender: els.gender.value || null,
-      nick:   els.nick.value   || null
-    };
-    localStorage.setItem(USERINFO_KEY, JSON.stringify(allInfos));
-    els.age.disabled   =
-    els.gender.disabled=
-    els.nick.disabled  = true;
-  }
-
-  // Supabase に挿入（返り値は minimal）
-  const payload = {
-    menu_id:  menuId,
-    nickname: els.nick.value   || null,
-    age:      els.age.value    || null,
-    gender:   els.gender.value || null,
-    comment
-  };
-  console.log('▶️ 投稿 payload:', payload);
-
-  const { error } = await supabase
+  // find_comments からコメントを取得
+  const { data: comments, error: commentError } = await supabase
     .from('find_comments')
-    .insert([ payload ], { returning: 'minimal' });
-
-  if (error) {
-    console.error('Supabaseエラー:', error);
-    return alert(`サーバーへの保存に失敗しました：${error.message}`);
+    .select('nickname, age, gender, comment')
+    .eq('menu_id', menu.id)
+    .order('created_at', { ascending: false });
+  if (commentError) {
+    console.error(commentError);
+    alert('クチコミ読み込みエラー');
+    return;
   }
 
-  // localStorage に履歴を追加
-  todayList.push(menuId);
-  allPosts[today] = todayList;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(allPosts));
+  // 3) 検索結果領域に写真・名前・人気度・説明を表示
+  resultEl.innerHTML = `
+    <img src="${menu.image_url}" alt="${menu.name_jp}">
+    <p class="menu-name">${menu.name_jp}</p>
+    <p class="popularity">⭐ ${comments.length}</p>
+    <p class="description">${menu.description_jp}</p>
+  `;
 
-  // フォームクリア＆UI更新
-  els.menu.value = '';
-  els.txt.value  = '';
-  updateUI();
-
-  // ボタンフィードバック
-  const orig = els.submit.textContent;
-  els.submit.textContent = 'ありがとうございます';
-  els.submit.disabled    = true;
-  setTimeout(() => {
-    els.submit.textContent = orig;
-    els.submit.disabled    = false;
-  }, 3000);
+  // 4) クチコミリストを表示
+  if (!comments.length) {
+    reviewsEl.innerHTML = `<p class="no-reviews">まだクチコミがありません。</p>`;
+  } else {
+    reviewsEl.innerHTML = '<h3>クチコミ</h3>';
+    comments.forEach(c => {
+      reviewsEl.insertAdjacentHTML('beforeend', `
+        <div class="review-item">
+          <div class="review-header">
+            <span class="nick">${c.nickname || '匿名'}</span>
+            <span class="meta">${c.age || ''} ${c.gender || ''}</span>
+          </div>
+          <div class="body">${c.comment}</div>
+        </div>
+      `);
+    });
+  }
 });
-
-function updateUI() {
-  const today = getToday();
-  const count = (JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')[today] || []).length;
-  els.prog.value = count;
-  els.level.textContent = count >= MAX_PER_DAY ? 'Lv MAX' : `Lv ${count}`;
-}
