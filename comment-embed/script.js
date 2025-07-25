@@ -1,24 +1,23 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'; 
+　　　import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const supabase = createClient(
   'https://labmhtrafdslfwqmzgky.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhYm1odHJhZmRzbGZ3cW16Z2t5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2OTAzNzksImV4cCI6MjA2NTI2NjM3OX0.CviQ3lzngfvqDFwEtDw5cTRSEICWliunXngYCokhbNs'
 );
 
-const MAX_PER_DAY  = 3;
+// 投稿は1回/日まで
+const MAX_PER_DAY  = 1;
 const STORAGE_KEY  = 'posts_by_date';
 const USERINFO_KEY = 'user_info_by_date';
 
 const els = {
-  form:    document.getElementById('comment-form'),
-  menu:    document.getElementById('form-menu'),
-  age:     document.getElementById('age-group'),
-  gender:  document.getElementById('gender'),
-  nick:    document.getElementById('nickname'),
-  txt:     document.getElementById('comment'),
-  submit:  document.getElementById('submit-btn'),
-  prog:    document.getElementById('progress'),
-  level:   document.getElementById('level-label')
+  form:   document.getElementById('comment-form'),
+  menu:   document.getElementById('form-menu'),
+  age:    document.getElementById('age-group'),
+  gender: document.getElementById('gender'),
+  nick:   document.getElementById('nickname'),
+  txt:    document.getElementById('comment'),
+  submit: document.getElementById('submit-btn'),
 };
 
 const getToday = () => new Date().toISOString().slice(0,10);
@@ -36,39 +35,34 @@ window.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // メニュー取得
+  // ── メニュー取得＆プルダウン生成 ──
   const { data: menus, error: menuErr } = await supabase
     .from('find_menus')
     .select('id,name_jp');
   if (menuErr) {
-    console.error('メニュー取得エラー:', menuErr);
+    console.error(menuErr);
     return alert('メニュー読み込みに失敗しました。');
   }
   menus.forEach(m => {
     els.menu.insertAdjacentHTML(
       'beforeend',
-      <option value="${m.id}">${m.name_jp}</option>
+      `<option value="${m.id}">${m.name_jp}</option>`
     );
   });
 
-  // 過去に入力した optional 情報があればロック
+  // ── 任意情報（初回のみ）ロック設定 ──
   const infos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
-  const saved = infos[today];
-  if (saved) {
-    els.age.value      = saved.age    || '';
-    els.gender.value   = saved.gender || '';
-    els.nick.value     = saved.nick   || '';
-    els.age.disabled   =
-    els.gender.disabled=
-    els.nick.disabled  = true;
+  if (infos[today]) {
+    const saved = infos[today];
+    els.age.value    = saved.age    || '';
+    els.gender.value = saved.gender || '';
+    els.nick.value   = saved.nick   || '';
+    els.age.disabled = els.gender.disabled = els.nick.disabled = true;
   }
-
-  updateUI();
 });
 
 els.form.addEventListener('submit', async e => {
   e.preventDefault();
-
   const today    = getToday();
   const pageDate = getPageDate();
   if (pageDate && pageDate !== today) {
@@ -79,15 +73,16 @@ els.form.addEventListener('submit', async e => {
   const menuId  = +els.menu.value;
   const comment = els.txt.value.trim();
   if (!menuId)   return alert('メニューを選択してください。');
-  if (!comment)  return alert('コメントを入力してください。');
+  if (!comment)  return alert('クチコミを入力してください。');
 
-  // 日次投稿履歴チェック
+  // ── 1回/日のチェック ──
   const allPosts  = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
   const todayList = allPosts[today] || [];
-  if (todayList.includes(menuId))      return alert('本日の同じメニューに投稿済みです。');
-  if (todayList.length >= MAX_PER_DAY) return alert(本日の上限(${MAX_PER_DAY}件)に達しました。);
+  if (todayList.length >= MAX_PER_DAY) {
+    return alert(`本日の上限(${MAX_PER_DAY}件)に達しました。`);
+  }
 
-  // 初回のみ optional 情報を保存
+  // ── 任意情報初回保存 ──
   const allInfos = JSON.parse(localStorage.getItem(USERINFO_KEY) || '{}');
   if (!allInfos[today]) {
     allInfos[today] = {
@@ -96,12 +91,10 @@ els.form.addEventListener('submit', async e => {
       nick:   els.nick.value   || null
     };
     localStorage.setItem(USERINFO_KEY, JSON.stringify(allInfos));
-    els.age.disabled   =
-    els.gender.disabled=
-    els.nick.disabled  = true;
+    els.age.disabled = els.gender.disabled = els.nick.disabled = true;
   }
 
-  // 🚀 ここが肝：挿入のみ（returning: 'minimal'）
+  // ── Supabase に挿入 ──
   const payload = {
     menu_id:  menuId,
     nickname: els.nick.value   || null,
@@ -109,40 +102,27 @@ els.form.addEventListener('submit', async e => {
     gender:   els.gender.value || null,
     comment
   };
-  console.log('▶️ 投稿 payload:', payload);
-
   const { error } = await supabase
     .from('find_comments')
-    .insert([ payload ], { returning: 'minimal' });
+    .insert([payload], { returning: 'minimal' });
 
   if (error) {
-    console.error('Supabaseエラー:', error);
-    return alert(投稿失敗：${error.message});
+    console.error(error);
+    return alert(`保存に失敗しました：${error.message}`);
   }
 
-  // localStorage に履歴を追加
+  // ── ローカル履歴更新 ──
   todayList.push(menuId);
   allPosts[today] = todayList;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(allPosts));
 
-  // フォームクリア＆UI更新
-  els.menu.value = '';
-  els.txt.value  = '';
-  updateUI();
-
-  // 確認フィードバック
-  const orig = els.submit.textContent;
+  // ── フィードバック＆クリア ──
   els.submit.textContent = 'ありがとうございます';
   els.submit.disabled    = true;
   setTimeout(() => {
-    els.submit.textContent = orig;
+    els.submit.textContent = '共有する';
     els.submit.disabled    = false;
   }, 3000);
+  els.menu.value = '';
+  els.txt.value  = '';
 });
-
-function updateUI() {
-  const today = getToday();
-  const cnt   = (JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')[today] || []).length;
-  els.prog.value      = cnt;
-  els.level.textContent = cnt >= MAX_PER_DAY ? 'Lv MAX' : Lv ${cnt};
-}　　　　
