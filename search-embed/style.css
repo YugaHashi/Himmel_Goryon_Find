@@ -1,0 +1,104 @@
+/* リセット＆ベース */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: sans-serif;
+  color: #fff;
+}
+.container {
+  max-width: 320px;
+  margin: auto;
+  padding: 16px;
+  text-align: center;
+}
+
+/* --- 検索バー --- */
+.search-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.search-bar input,
+.search-bar button {
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+.search-bar input {
+  flex: 1;
+  background: #fff;
+  color: #000;
+  font-weight: bold;
+}
+.search-bar button {
+  background: #339aff;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* --- 検索結果 --- */
+.result {
+  margin-bottom: 24px;
+}
+.result img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+.result p.menu-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 4px 0;
+  color: #fff;
+}
+.result p.popularity,
+.result p.description {
+  font-size: 1rem;
+  white-space: pre-wrap;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.not-found,
+.no-reviews {
+  color: #fff;
+  margin-top: 16px;
+}
+
+/* --- クチコミ --- */
+.reviews h3 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: #fff;
+}
+.review-item {
+  background: #fff;
+  color: #333;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 12px;
+  text-align: left;
+}
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.review-header .nick {
+  font-weight: bold;
+  font-size: 1rem;
+}
+.review-header .meta {
+  font-size: 0.85rem;
+  color: #666;
+}
+.review-item .body {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
