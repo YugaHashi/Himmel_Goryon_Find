@@ -1,5 +1,7 @@
+/* リセット＆ベース */
 html, body {
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
   background: transparent;
   font-family: sans-serif;
   color: #fff;
@@ -24,6 +26,7 @@ html, body {
   border-radius: 6px;
   padding: 0 12px;
   box-sizing: border-box;
+  font-size: 1rem;
 }
 .search-bar input {
   flex: 1;
@@ -42,9 +45,6 @@ html, body {
 .result {
   margin-bottom: 24px;
 }
-/* 初期の斜め線は削除 */
-.result .placeholder { display: none; }
-
 .result img {
   width: 100%;
   border-radius: 8px;
@@ -57,13 +57,17 @@ html, body {
   margin: 4px 0;
   color: #fff;
 }
-/* 人気度・説明を白文字に */
 .result p.popularity,
 .result p.description {
   font-size: 1rem;
   white-space: pre-wrap;
   margin-bottom: 8px;
   color: #fff;
+}
+.not-found,
+.no-reviews {
+  color: #fff;
+  margin-top: 16px;
 }
 
 /* --- クチコミ --- */
@@ -97,11 +101,4 @@ html, body {
 .review-item .body {
   font-size: 0.95rem;
   line-height: 1.4;
-}
-
-/* メニューが見つからない／レビューなし */
-.not-found,
-.no-reviews {
-  color: #fff;
-  margin-top: 16px;
 }
