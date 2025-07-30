@@ -1,0 +1,57 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: sans-serif;
+  color: #fff;
+}
+.container {
+  max-width: 320px;
+  margin: auto;
+  padding: 16px;
+  text-align: center;
+}
+
+/* --- 検索バー --- */
+.search-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.search-bar input,
+.search-bar button {
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+.search-bar input {
+  flex: 1;
+  background: #fff;
+  color: #000;
+  font-weight: bold;
+}
+.search-bar button {
+  background: #339aff;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* --- 検索結果 --- */
+.result img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+.result p.menu-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 4px 0;
+}
+.not-found {
+  margin-top: 16px;
+}
