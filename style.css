@@ -5,6 +5,7 @@ html, body {
   font-family: sans-serif;
   color: #fff;
 }
+
 .container {
   max-width: 320px;
   margin: auto;
@@ -18,22 +19,31 @@ html, body {
   gap: 8px;
   margin-bottom: 16px;
 }
-.search-bar input,
-.search-bar button {
+
+/* 入力欄 */
+.search-bar input {
+  flex: 1;
+  min-width: 0;          /* ← 追加：狭い画面でも折り返さない */
   height: 36px;
   border: none;
   border-radius: 6px;
   padding: 0 12px;
   box-sizing: border-box;
   font-size: 1rem;
-}
-.search-bar input {
-  flex: 1;
   background: #fff;
   color: #000;
   font-weight: bold;
 }
+
+/* 検索ボタン */
 .search-bar button {
+  flex-shrink: 0;        /* ← 追加：ボタンを折り返さず常に表示 */
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  font-size: 1rem;
   background: #339aff;
   color: #fff;
   cursor: pointer;
@@ -47,11 +57,20 @@ html, body {
   object-fit: cover;
   margin-bottom: 8px;
 }
+
 .result p.menu-name {
   font-size: 1.2rem;
   font-weight: bold;
   margin: 4px 0;
 }
+
+.result p.description {
+  font-size: 1rem;
+  margin-top: 8px;
+  color: #fff;
+  white-space: pre-wrap;
+}
+
 .not-found {
   margin-top: 16px;
 }
