@@ -14,19 +14,21 @@ let menus = [];
 async function loadMenus() {
   const { data, error } = await supabase
     .from('find_menus')
-    .select('id, name_jp, image_url');
+    .select('id, name_jp, description_jp, image_url');
   if (error) {
-    console.error(error);
+    console.error('メニュー読み込みエラー:', error);
     return alert('メニュー読み込みに失敗しました。');
   }
+  console.log('ロードしたメニュー数:', data.length);
   menus = data;
   data.forEach(m => {
     suggestions.insertAdjacentHTML('beforeend', `<option value="${m.name_jp}">`);
   });
 }
+
 loadMenus();
 
-btn.addEventListener('click', async () => {
+btn.addEventListener('click', () => {
   const keyword = input.value.trim();
   if (!keyword) return;
 
@@ -36,9 +38,9 @@ btn.addEventListener('click', async () => {
     return;
   }
 
-  // 名前と写真だけ表示（クチコミ非表示）
   resultEl.innerHTML = `
     <img src="${menu.image_url}" alt="${menu.name_jp}">
     <p class="menu-name">${menu.name_jp}</p>
+    <p class="description">${menu.description_jp}</p>
   `;
 });
